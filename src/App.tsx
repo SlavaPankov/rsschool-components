@@ -1,9 +1,11 @@
-function App() {
-  return (
-    <div>
-      Hello world!
-    </div>
-  );
-}
+import { Component } from 'react';
 
-export default App;
+type IProps = object;
+
+type IState = object;
+
+export class App extends Component<IProps, IState> {
+  render() {
+    return <div>Hello World!</div>;
+  }
+}

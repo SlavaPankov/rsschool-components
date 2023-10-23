@@ -24,6 +24,8 @@ module.exports = {
     "prettier"
   ],
   "rules": {
-    "react/react-in-jsx-scope": 0
+    "react/react-in-jsx-scope": 0,
+    "react/prefer-stateless-function": 0,
+    "import/prefer-default-export": 0
   }
 }
