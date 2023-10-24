@@ -13,6 +13,10 @@ export class ResultList extends Component<IProps, IState> {
   render() {
     const { list } = this.props;
 
+    if (list.length === 0) {
+      return <div>No results</div>;
+    }
+
     return (
       <ul className="list">
         {list.map((item) => (

@@ -20,7 +20,7 @@ export class App extends Component<IProps, IState> {
 
   handleSubmit = async (search: string) => {
     const response = await fetch(
-      `https://swapi.dev/api/people/?search=${search}`
+      `https://swapi.dev/api/people/?search=${search.trim()}`
     );
     const { results }: { results: IPerson[] } = await response.json();
     this.setState({ results });

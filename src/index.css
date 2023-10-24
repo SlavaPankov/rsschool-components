@@ -1,15 +1,15 @@
 * {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 body {
-    padding: 0;
-    margin: 0;
+  padding: 0;
+  margin: 0;
 }
 
 #root {
-    max-width: 1180px;
-    width: 100%;
-    margin: 0 auto;
-    padding: 15px;
+  max-width: 1180px;
+  width: 100%;
+  margin: 0 auto;
+  padding: 15px;
 }

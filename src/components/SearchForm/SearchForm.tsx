@@ -1,5 +1,6 @@
 import { ChangeEvent, Component, FormEvent } from 'react';
 import './searchForm.css';
+import { ErrorButton } from '../ErrorButton';
 
 type IProps = {
   onSubmit: (search: string) => void;
@@ -64,6 +65,7 @@ export class SearchForm extends Component<IProps, IState> {
           />
         </label>
         <button type="submit">search</button>
+        <ErrorButton />
       </form>
     );
   }
