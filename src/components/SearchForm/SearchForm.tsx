@@ -1,4 +1,5 @@
 import { ChangeEvent, Component, FormEvent } from 'react';
+import './searchForm.css';
 
 type IProps = {
   onSubmit: (search: string) => void;
@@ -50,14 +51,18 @@ export class SearchForm extends Component<IProps, IState> {
     const { search } = this.state;
 
     return (
-      <form onSubmit={this.handleSubmit}>
-        <input
-          type="text"
-          name="search"
-          value={search}
-          onChange={this.handleChange}
-          placeholder="May the force be with you"
-        />
+      <form className="form" onSubmit={this.handleSubmit}>
+        <label className="label" htmlFor="search">
+          <input
+            className="input"
+            type="text"
+            id="search"
+            name="search"
+            value={search}
+            onChange={this.handleChange}
+            placeholder="May the force be with you"
+          />
+        </label>
         <button type="submit">search</button>
       </form>
     );

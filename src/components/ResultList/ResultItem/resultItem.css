@@ -1,0 +1,47 @@
+.item {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding-left: 10px;
+    padding-bottom: 25px;
+    border-bottom: 1px solid grey;
+}
+
+.item-heading {
+    max-width: 250px;
+    width: 100%;
+    margin: 0;
+    font-size: 24px;
+    line-height: 100%;
+    font-weight: 700;
+}
+
+.info-list {
+    max-width: 250px;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.info-item {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.info-name {
+    width: 100%;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.info-value {
+    text-transform: capitalize;
+    white-space: nowrap;
+}
