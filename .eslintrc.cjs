@@ -13,6 +13,7 @@ module.exports = {
   ],
   "overrides": [],
   "parser": "@typescript-eslint/parser",
+  "ignorePatterns": [".eslintrc.cjs", "vite.config.ts"],
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module",
