@@ -26,9 +26,7 @@ export class SearchForm extends Component<IProps, IState> {
       search: search || '',
     });
 
-    if (search) {
-      onSubmit(search);
-    }
+    onSubmit(search || '');
   }
 
   handleChange = (event: ChangeEvent<HTMLInputElement>) => {
