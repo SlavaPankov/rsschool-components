@@ -2,7 +2,7 @@ import { Component } from 'react';
 import { SearchForm } from './components/SearchForm';
 import { Heading } from './components/Heading';
 import { IPerson } from './types/IPerson';
-import { ResultList } from './components/ResultList';
+import { ResultsList } from './components/ResultsList';
 import { Loader } from './components/Loader';
 
 type IProps = object;
@@ -37,7 +37,7 @@ export class App extends Component<IProps, IState> {
       <>
         <Heading />
         <SearchForm onSubmit={this.handleSubmit} />
-        {isLoading ? <Loader /> : <ResultList list={results} />}
+        {isLoading ? <Loader /> : <ResultsList list={results} />}
       </>
     );
   }
