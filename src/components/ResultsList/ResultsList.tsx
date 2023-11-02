@@ -1,4 +1,4 @@
-import { IPerson } from '../../types/IPerson';
+import { IPerson } from '../../types/interfaces/IPerson';
 import './resultsList.css';
 import { ResultItem } from './ResultItem/ResultItem';
 

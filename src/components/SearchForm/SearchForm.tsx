@@ -1,33 +1,25 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent } from 'react';
 import './searchForm.css';
 import { ErrorButton } from '../ErrorButton';
 
 type ISearchFormProps = {
-  onSubmit: (search: string) => void;
+  value: string;
+  setValue: (data: string) => void;
+  onSubmit: (query: string) => void;
 };
 
-export function SearchForm({ onSubmit }: ISearchFormProps) {
-  const [search, setSearch] = useState<string>('');
-
+export function SearchForm({ value, setValue, onSubmit }: ISearchFormProps) {
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setSearch(event.target.value);
+    setValue(event.target.value);
   };
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    localStorage.setItem('search', search);
+    localStorage.setItem('search', value);
 
-    onSubmit(search);
+    onSubmit(value);
   };
-
-  useEffect(() => {
-    const searchLS = localStorage.getItem('search');
-
-    setSearch(searchLS || '');
-
-    onSubmit(searchLS || '');
-  }, []);
 
   return (
     <form className="form" onSubmit={handleSubmit}>
@@ -37,7 +29,7 @@ export function SearchForm({ onSubmit }: ISearchFormProps) {
           type="text"
           id="search"
           name="search"
-          value={search}
+          value={value}
           onChange={handleChange}
           placeholder="May the force be with you"
         />
