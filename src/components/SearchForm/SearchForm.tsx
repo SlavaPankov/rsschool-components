@@ -27,7 +27,7 @@ export function SearchForm({ onSubmit }: ISearchFormProps) {
     setSearch(searchLS || '');
 
     onSubmit(searchLS || '');
-  }, [onSubmit]);
+  }, []);
 
   return (
     <form className="form" onSubmit={handleSubmit}>
