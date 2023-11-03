@@ -6,10 +6,11 @@ import {
 } from 'react-router-dom';
 import { DetailPage } from './pages/DetailPage';
 import { MainPage } from './pages/MainPage';
+import { Fallback } from './components/Fallback';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<MainPage />}>
+    <Route path="/" element={<MainPage />} errorElement={<Fallback />}>
       <Route path="detail/:id" element={<DetailPage />} />
     </Route>
   )

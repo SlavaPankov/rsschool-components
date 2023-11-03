@@ -1,5 +1,5 @@
 import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { Outlet, useSearchParams } from 'react-router-dom';
 import { SearchForm } from '../../components/SearchForm';
 import { Heading } from '../../components/Heading';
 import { IProduct } from '../../types/interfaces/IProduct';
@@ -8,6 +8,7 @@ import { Loader } from '../../components/Loader';
 import { Pagination } from '../../components/Pagination';
 import { EPaginationButtonDirection } from '../../types/enums/EPaginationButtonDirection';
 import { Api } from '../../api/Api';
+import './mainPage.css';
 
 export function MainPage() {
   const api = new Api();
@@ -92,18 +93,21 @@ export function MainPage() {
       {isLoading ? (
         <Loader />
       ) : (
-        <>
-          <ResultsList list={results} />
-          {isPagination && (
-            <Pagination
-              limit={limit}
-              onClick={handlePaginationClick}
-              onChange={handleChange}
-              isPrevDisabled={isPrevDisabled}
-              isNextDisabled={isNextDisabled}
-            />
-          )}
-        </>
+        <div className="content">
+          <div className="paginationContainer">
+            <ResultsList list={results} />
+            {isPagination && (
+              <Pagination
+                limit={limit}
+                onClick={handlePaginationClick}
+                onChange={handleChange}
+                isPrevDisabled={isPrevDisabled}
+                isNextDisabled={isNextDisabled}
+              />
+            )}
+          </div>
+          <Outlet />
+        </div>
       )}
     </>
   );

@@ -9,7 +9,7 @@ interface IApi {
     page?: number,
     countPerPage?: number
   ) => Promise<IResponse>;
-  getById: (id: number) => Promise<IProduct>;
+  getProductById: (id: string) => Promise<IProduct>;
 }
 
 export class Api implements IApi {
@@ -17,10 +17,10 @@ export class Api implements IApi {
 
   searchEndpoint = 'search';
 
-  async getById(id: number): Promise<IProduct> {
-    // eslint-disable-next-line no-console
-    console.log(id);
-    return {} as Promise<IProduct>;
+  async getProductById(id: string): Promise<IProduct> {
+    const response = await fetch(`${this.baseUrl}/${id}`);
+
+    return response.json();
   }
 
   async search(query: string, page = 1, countPerPage = 10): Promise<IResponse> {
