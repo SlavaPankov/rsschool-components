@@ -1,4 +1,4 @@
-import { MouseEvent, useEffect, useState } from 'react';
+import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { SearchForm } from '../../components/SearchForm';
 import { Heading } from '../../components/Heading';
@@ -21,7 +21,7 @@ export function MainPage() {
   const [search, setSearch] = useState<string>('');
   const [isPrevDisabled, setIsPrevDisabled] = useState<boolean>(false);
   const [isNextDisabled, setIsNextDisabled] = useState<boolean>(false);
-  const [limit] = useState<number>(10);
+  const [limit, setLimit] = useState<number>(10);
   const [isComponentMount, setIsComponentMount] = useState<boolean>(false);
 
   const handleSubmit = async (
@@ -41,6 +41,12 @@ export function MainPage() {
     setIsPagination(products.length < total);
     setIsLoading(false);
     setResults(products);
+  };
+
+  const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    setLimit(Number(event.target.value));
+    setSearchParams({});
+    setPage(1);
   };
 
   const handlePaginationClick = (event: MouseEvent<HTMLButtonElement>) => {
@@ -72,7 +78,7 @@ export function MainPage() {
     if (isComponentMount) {
       handleSubmit(search, page, limit);
     }
-  }, [page]);
+  }, [page, limit]);
 
   return (
     <>
@@ -90,7 +96,9 @@ export function MainPage() {
           <ResultsList list={results} />
           {isPagination && (
             <Pagination
+              limit={limit}
               onClick={handlePaginationClick}
+              onChange={handleChange}
               isPrevDisabled={isPrevDisabled}
               isNextDisabled={isNextDisabled}
             />

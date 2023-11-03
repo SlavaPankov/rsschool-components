@@ -1,15 +1,19 @@
-import { MouseEvent } from 'react';
+import { ChangeEvent, MouseEvent } from 'react';
 import './pagination.css';
 import { EPaginationButtonDirection } from '../../types/enums/EPaginationButtonDirection';
 
 type IPaginationProps = {
+  limit: number;
   onClick: (event: MouseEvent<HTMLButtonElement>) => void;
+  onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
   isPrevDisabled?: boolean;
   isNextDisabled?: boolean;
 };
 
 export function Pagination({
+  limit,
   onClick,
+  onChange,
   isNextDisabled,
   isPrevDisabled,
 }: IPaginationProps) {
@@ -31,6 +35,19 @@ export function Pagination({
       >
         Next
       </button>
+      <label className="limit" htmlFor="limit">
+        Limit:
+        <select
+          name="limit"
+          id="limit"
+          defaultValue={limit}
+          onChange={onChange}
+        >
+          <option value="10">10</option>
+          <option value="20">20</option>
+          <option value="30">30</option>
+        </select>
+      </label>
     </div>
   );
 }

@@ -5,11 +5,11 @@ import {
   RouterProvider,
 } from 'react-router-dom';
 import { DetailPage } from './pages/DetailPage';
-import { RootLayout } from './layout/RootLayout';
+import { MainPage } from './pages/MainPage';
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route path="/" element={<RootLayout />}>
+    <Route path="/" element={<MainPage />}>
       <Route path="detail/:id" element={<DetailPage />} />
     </Route>
   )
