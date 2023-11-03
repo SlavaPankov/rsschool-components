@@ -1,14 +1,23 @@
 import { ChangeEvent, FormEvent } from 'react';
 import './searchForm.css';
+import { useSearchParams } from 'react-router-dom';
 import { ErrorButton } from '../ErrorButton';
 
 type ISearchFormProps = {
   value: string;
   setValue: (data: string) => void;
-  onSubmit: (query: string) => void;
+  limit: number;
+  onSubmit: (query: string, page: number, limit: number) => void;
 };
 
-export function SearchForm({ value, setValue, onSubmit }: ISearchFormProps) {
+export function SearchForm({
+  value,
+  setValue,
+  limit,
+  onSubmit,
+}: ISearchFormProps) {
+  const [, setSearchParams] = useSearchParams();
+
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
   };
@@ -18,7 +27,8 @@ export function SearchForm({ value, setValue, onSubmit }: ISearchFormProps) {
 
     localStorage.setItem('search', value);
 
-    onSubmit(value);
+    onSubmit(value, 1, limit);
+    setSearchParams({});
   };
 
   return (
