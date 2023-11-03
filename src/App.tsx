@@ -1,45 +1,32 @@
 import { MouseEvent, useEffect, useState } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import { SearchForm } from './components/SearchForm';
 import { Heading } from './components/Heading';
-import { IPerson } from './types/interfaces/IPerson';
+import { IProduct } from './types/interfaces/IProduct';
 import { ResultsList } from './components/ResultsList';
 import { Loader } from './components/Loader';
 import { Pagination } from './components/Pagination';
 import { EPaginationButtonDirection } from './types/enums/EPaginationButtonDirection';
 
 export function App() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [results, setResults] = useState<IPerson[]>([]);
+  const [results, setResults] = useState<IProduct[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isPagination, setIsPagination] = useState<boolean | null>(null);
-  const [page, setPage] = useState<number>(
-    Number(searchParams.get('page')) || 1
-  );
   const [search, setSearch] = useState<string>('');
-  const [isPrevDisabled, setIsPrevDisabled] = useState<boolean>(false);
-  const [isNextDisabled, setIsNextDisabled] = useState<boolean>(false);
 
   const handleSubmit = async (query: string) => {
     setIsLoading(true);
     const response = await fetch(
-      `https://swapi.dev/api/people/?search=${query.trim()}&page=${page}`
+      `https://dummyjson.com/products/search/?q=${query.trim()}`
     );
     const {
-      results: responseResults,
-      count,
-      previous,
-      next,
+      products: responseResults,
+      total,
     }: {
-      results: IPerson[];
-      count: number;
-      previous: null | string;
-      next: null | string;
+      products: IProduct[];
+      total: number;
     } = await response.json();
 
-    setIsNextDisabled(next === null);
-    setIsPrevDisabled(previous === null);
-    setIsPagination(results.length < count);
+    setIsPagination(results.length < total);
     setIsLoading(false);
     setResults(responseResults);
   };
@@ -48,9 +35,9 @@ export function App() {
     if (
       event.currentTarget.dataset.direction === EPaginationButtonDirection.next
     ) {
-      setPage((prevState) => prevState + 1);
-    } else if (page > 1) {
-      setPage((prevState) => prevState - 1);
+      console.log('up');
+    } else {
+      console.log('down');
     }
   };
 
@@ -58,12 +45,9 @@ export function App() {
     const searchLs = localStorage.getItem('search');
 
     setSearch(searchLs || '');
-  }, []);
 
-  useEffect(() => {
-    setSearchParams({ page: `${page}` });
-    handleSubmit(search);
-  }, [page]);
+    handleSubmit(searchLs || '');
+  }, []);
 
   return (
     <>
@@ -74,13 +58,7 @@ export function App() {
       ) : (
         <>
           <ResultsList list={results} />
-          {isPagination && (
-            <Pagination
-              onClick={handlePaginationClick}
-              isPrevDisabled={isPrevDisabled}
-              isNextDisabled={isNextDisabled}
-            />
-          )}
+          {isPagination && <Pagination onClick={handlePaginationClick} />}
         </>
       )}
     </>

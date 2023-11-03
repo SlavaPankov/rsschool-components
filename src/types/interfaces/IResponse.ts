@@ -1,8 +1,8 @@
-import { IPerson } from './IPerson';
+import { IProduct } from './IProduct';
 
 export interface IResponse {
-  count: number;
-  previous: string;
-  next: string;
-  results: IPerson[];
+  total: number;
+  skip: number;
+  limit: number;
+  products: IProduct[];
 }

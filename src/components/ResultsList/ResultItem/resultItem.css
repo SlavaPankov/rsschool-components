@@ -1,10 +1,13 @@
-.item {
+.item a {
   display: flex;
   align-items: flex-start;
   gap: 20px;
   padding-left: 10px;
   padding-bottom: 25px;
   border-bottom: 1px solid grey;
+  cursor: pointer;
+  text-decoration: none;
+  color: black;
 }
 
 .item-heading {

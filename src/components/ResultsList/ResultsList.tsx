@@ -1,9 +1,9 @@
-import { IPerson } from '../../types/interfaces/IPerson';
+import { IProduct } from '../../types/interfaces/IProduct';
 import './resultsList.css';
 import { ResultItem } from './ResultItem/ResultItem';
 
 type IResultsListProps = {
-  list: IPerson[];
+  list: IProduct[];
 };
 
 export function ResultsList({ list }: IResultsListProps) {
@@ -14,15 +14,7 @@ export function ResultsList({ list }: IResultsListProps) {
   return (
     <ul className="list">
       {list.map((item) => (
-        <ResultItem
-          key={item.name}
-          name={item.name}
-          birthDate={item.birth_year}
-          eyeColor={item.eye_color}
-          gender={item.gender}
-          hairColor={item.hair_color}
-          height={item.height}
-        />
+        <ResultItem id={item.id} title={item.title} key={item.id} />
       ))}
     </ul>
   );
