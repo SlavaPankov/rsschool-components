@@ -1,5 +1,5 @@
 import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
-import { Outlet, useSearchParams } from 'react-router-dom';
+import { Outlet, useLocation, useSearchParams } from 'react-router-dom';
 import { SearchForm } from '../../components/SearchForm';
 import { Heading } from '../../components/Heading';
 import { IProduct } from '../../types/interfaces/IProduct';
@@ -12,18 +12,21 @@ import './mainPage.css';
 
 export function MainPage() {
   const api = new Api();
+  const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [results, setResults] = useState<IProduct[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [isPagination, setIsPagination] = useState<boolean | null>(null);
-  const [page, setPage] = useState<number>(
-    Number(searchParams.get('page')) || 1
-  );
   const [search, setSearch] = useState<string>('');
   const [isPrevDisabled, setIsPrevDisabled] = useState<boolean>(false);
   const [isNextDisabled, setIsNextDisabled] = useState<boolean>(false);
-  const [limit, setLimit] = useState<number>(10);
   const [isComponentMount, setIsComponentMount] = useState<boolean>(false);
+  const [limit, setLimit] = useState<number>(
+    Number(localStorage.getItem('limit')) || 10
+  );
+  const [page, setPage] = useState<number>(
+    Number(searchParams.get('page')) || 1
+  );
 
   const handleSubmit = async (
     query: string,
@@ -37,7 +40,7 @@ export function MainPage() {
       currentLimit
     );
 
-    setIsNextDisabled((page - 1) * limit === total);
+    setIsNextDisabled(page * limit === total);
     setIsPrevDisabled(page === 1);
     setIsPagination(products.length < total);
     setIsLoading(false);
@@ -45,6 +48,7 @@ export function MainPage() {
   };
 
   const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
+    localStorage.setItem('limit', event.target.value);
     setLimit(Number(event.target.value));
     setSearchParams({});
     setPage(1);
@@ -81,6 +85,15 @@ export function MainPage() {
     }
   }, [page, limit]);
 
+  useEffect(() => {
+    if (searchParams.get('page') === '1') {
+      setSearchParams({});
+    }
+
+    setIsPrevDisabled(location.pathname.includes('detail'));
+    setIsNextDisabled(location.pathname.includes('detail'));
+  }, [location]);
+
   return (
     <>
       <Heading />
@@ -98,6 +111,7 @@ export function MainPage() {
             <ResultsList list={results} />
             {isPagination && (
               <Pagination
+                currentPage={page}
                 limit={limit}
                 onClick={handlePaginationClick}
                 onChange={handleChange}

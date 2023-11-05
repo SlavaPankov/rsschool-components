@@ -3,6 +3,7 @@ import './pagination.css';
 import { EPaginationButtonDirection } from '../../types/enums/EPaginationButtonDirection';
 
 type IPaginationProps = {
+  currentPage: number;
   limit: number;
   onClick: (event: MouseEvent<HTMLButtonElement>) => void;
   onChange: (event: ChangeEvent<HTMLSelectElement>) => void;
@@ -11,6 +12,7 @@ type IPaginationProps = {
 };
 
 export function Pagination({
+  currentPage,
   limit,
   onClick,
   onChange,
@@ -27,6 +29,7 @@ export function Pagination({
       >
         Prev
       </button>
+      <button type="button">{currentPage}</button>
       <button
         disabled={isNextDisabled}
         onClick={onClick}
@@ -45,7 +48,7 @@ export function Pagination({
         >
           <option value="10">10</option>
           <option value="20">20</option>
-          <option value="30">30</option>
+          <option value="50">50</option>
         </select>
       </label>
     </div>

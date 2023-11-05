@@ -1,6 +1,6 @@
 import { IProduct } from '../../types/interfaces/IProduct';
 import './resultsList.css';
-import { ResultItem } from './ResultItem/ResultItem';
+import { ResultItem } from './ResultItem';
 
 type IResultsListProps = {
   list: IProduct[];

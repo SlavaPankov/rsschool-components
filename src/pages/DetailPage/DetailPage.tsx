@@ -1,4 +1,4 @@
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { IProduct } from '../../types/interfaces/IProduct';
 import { Api } from '../../api/Api';
@@ -14,18 +14,26 @@ export function DetailPage() {
   const [isMount, setIsMount] = useState<boolean>(false);
   const [product, setProduct] = useState<IProduct | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [page, setPage] = useState(0);
 
-  function closeOnClick(event: MouseEvent) {
+  const closeOnClick = (event: MouseEvent) => {
     if (event.target instanceof Node && !ref.current?.contains(event.target)) {
-      navigate(-1);
+      navigate(`/?page=${page}`);
     }
-  }
+  };
+
+  const handleClick = () => {
+    navigate(`/?page=${page}`);
+  };
 
   useEffect(() => {
     if (!id) {
       return;
     }
 
+    setPage(Number(searchParams.get('page')) || 1);
+    setSearchParams({});
     setIsLoading(true);
     api.getProductById(id).then((response) => {
       setProduct(response);
@@ -49,6 +57,9 @@ export function DetailPage() {
 
   return (
     <div className="detail" ref={ref}>
+      <button className="cross" type="button" onClick={handleClick}>
+        cross
+      </button>
       {isLoading && <Loader />}
       {product && !isLoading && <Card product={product} />}
     </div>
