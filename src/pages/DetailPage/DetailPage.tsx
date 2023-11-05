@@ -1,4 +1,9 @@
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import {
+  ScrollRestoration,
+  useNavigate,
+  useParams,
+  useSearchParams,
+} from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import { IProduct } from '../../types/interfaces/IProduct';
 import { Api } from '../../api/Api';
@@ -56,12 +61,15 @@ export function DetailPage() {
   }, [isMount]);
 
   return (
-    <div className="detail" ref={ref}>
-      <button className="cross" type="button" onClick={handleClick}>
-        cross
-      </button>
-      {isLoading && <Loader />}
-      {product && !isLoading && <Card product={product} />}
-    </div>
+    <>
+      <div className="detail" ref={ref}>
+        <button className="cross" type="button" onClick={handleClick}>
+          cross
+        </button>
+        {isLoading && <Loader />}
+        {product && !isLoading && <Card product={product} />}
+      </div>
+      <ScrollRestoration />
+    </>
   );
 }
