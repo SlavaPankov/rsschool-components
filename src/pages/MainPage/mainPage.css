@@ -1,0 +1,7 @@
+.content {
+  display: flex;
+}
+
+.paginationContainer {
+  flex: 1 0 auto;
+}
