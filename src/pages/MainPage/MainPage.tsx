@@ -102,6 +102,7 @@ export function MainPage() {
         limit={limit}
         setValue={setSearch}
         onSubmit={handleSubmit}
+        setPage={setPage}
       />
       {isLoading ? (
         <Loader />

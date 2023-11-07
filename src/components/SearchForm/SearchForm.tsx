@@ -8,6 +8,7 @@ type ISearchFormProps = {
   setValue: (data: string) => void;
   limit: number;
   onSubmit: (query: string, page: number, limit: number) => void;
+  setPage: (page: number) => void;
 };
 
 export function SearchForm({
@@ -15,6 +16,7 @@ export function SearchForm({
   setValue,
   limit,
   onSubmit,
+  setPage,
 }: ISearchFormProps) {
   const [, setSearchParams] = useSearchParams();
 
@@ -28,6 +30,7 @@ export function SearchForm({
     localStorage.setItem('search', value);
 
     onSubmit(value, 1, limit);
+    setPage(1);
     setSearchParams({});
   };
 
