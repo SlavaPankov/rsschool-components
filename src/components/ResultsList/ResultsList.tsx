@@ -1,21 +1,27 @@
-import { IProduct } from '../../types/interfaces/IProduct';
+import { useContext } from 'react';
 import './resultsList.css';
 import { ResultItem } from './ResultItem';
+import { productsContext } from '../../context/productsContext';
+import { Loader } from '../Loader';
 
-type IResultsListProps = {
-  list: IProduct[];
-};
+export function ResultsList() {
+  const { products, isLoading } = useContext(productsContext);
 
-export function ResultsList({ list }: IResultsListProps) {
-  if (list.length === 0) {
+  if (products.length === 0) {
     return <div>No results</div>;
   }
 
   return (
-    <ul className="list">
-      {list.map((item) => (
-        <ResultItem id={item.id} title={item.title} key={item.id} />
-      ))}
-    </ul>
+    <div>
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <ul className="list">
+          {products.map((item) => (
+            <ResultItem id={item.id} title={item.title} key={item.id} />
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }
