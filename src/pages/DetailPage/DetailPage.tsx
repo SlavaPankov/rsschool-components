@@ -18,7 +18,7 @@ export function DetailPage() {
   const ref = useRef<HTMLDivElement>(null);
   const [isMount, setIsMount] = useState<boolean>(false);
   const [product, setProduct] = useState<IProduct | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState(0);
 
@@ -41,8 +41,13 @@ export function DetailPage() {
     setSearchParams({});
     setIsLoading(true);
     api.getProductById(id).then((response) => {
-      setProduct(response);
       setIsLoading(false);
+
+      if (!response) {
+        return;
+      }
+
+      setProduct(response);
     });
     setIsMount(true);
   }, []);
@@ -60,16 +65,23 @@ export function DetailPage() {
     };
   }, [isMount]);
 
-  return (
-    <>
+  if (isLoading) {
+    return <Loader />;
+  }
+  if (!product) {
+    return (
       <div className="detail" ref={ref}>
-        <button className="cross" type="button" onClick={handleClick}>
-          cross
-        </button>
-        {isLoading && <Loader />}
-        {product && !isLoading && <Card product={product} />}
+        <h1 className="noProduct">Product not found</h1>
       </div>
+    );
+  }
+  return (
+    <div className="detail" ref={ref}>
+      <button className="cross" type="button" onClick={handleClick}>
+        cross
+      </button>
+      {product && !isLoading && <Card product={product} />}
       <ScrollRestoration />
-    </>
+    </div>
   );
 }
