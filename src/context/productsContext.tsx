@@ -3,7 +3,7 @@ import { IProduct } from '../types/interfaces/IProduct';
 import { useProductsData } from '../hooks/useProductsData';
 import { searchContext } from './searchContext';
 
-interface IProductsContext {
+export interface IProductsContext {
   products: IProduct[];
   isLoading: boolean;
   isPagination: boolean;

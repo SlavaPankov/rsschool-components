@@ -66,17 +66,21 @@ export function DetailPage() {
   }, [isMount]);
 
   if (isLoading) {
-    return <Loader />;
+    return (
+      <div className="detail" data-testid="detail" ref={ref}>
+        <Loader />
+      </div>
+    );
   }
   if (!product) {
     return (
-      <div className="detail" ref={ref}>
+      <div className="detail" data-testid="detail" ref={ref}>
         <h1 className="noProduct">Product not found</h1>
       </div>
     );
   }
   return (
-    <div className="detail" ref={ref}>
+    <div className="detail" data-testid="detail" ref={ref}>
       <button className="cross" type="button" onClick={handleClick}>
         cross
       </button>
