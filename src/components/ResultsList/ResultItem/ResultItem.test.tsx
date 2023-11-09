@@ -98,5 +98,6 @@ describe('Result Item', () => {
     await user.click(link);
     await waitFor(() => screen.getByTestId('detail'));
     expect(mock).toBeCalled();
+    expect(mock).toBeCalledTimes(1);
   });
 });
