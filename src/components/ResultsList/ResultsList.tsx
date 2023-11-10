@@ -7,21 +7,21 @@ import { Loader } from '../Loader';
 export function ResultsList() {
   const { products, isLoading } = useContext(productsContext);
 
+  if (isLoading) {
+    return <Loader />;
+  }
+
   if (products.length === 0) {
     return <div>No results</div>;
   }
 
   return (
     <div>
-      {isLoading ? (
-        <Loader />
-      ) : (
-        <ul className="list">
-          {products.map((item) => (
-            <ResultItem id={item.id} title={item.title} key={item.id} />
-          ))}
-        </ul>
-      )}
+      <ul className="list">
+        {products.map((item) => (
+          <ResultItem id={item.id} title={item.title} key={item.id} />
+        ))}
+      </ul>
     </div>
   );
 }

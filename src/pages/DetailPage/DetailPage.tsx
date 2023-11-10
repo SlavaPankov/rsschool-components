@@ -81,7 +81,12 @@ export function DetailPage() {
   }
   return (
     <div className="detail" data-testid="detail" ref={ref}>
-      <button className="cross" type="button" onClick={handleClick}>
+      <button
+        className="cross"
+        type="button"
+        name="close"
+        onClick={handleClick}
+      >
         cross
       </button>
       {product && !isLoading && <Card product={product} />}

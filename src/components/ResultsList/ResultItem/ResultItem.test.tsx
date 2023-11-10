@@ -8,25 +8,11 @@ import {
 } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import { ResultItem } from './ResultItem';
-import { IProduct } from '../../../types/interfaces/IProduct';
 import { productsContext } from '../../../context/productsContext';
 import { Content } from '../../Content';
 import { DetailPage } from '../../../pages/DetailPage';
 import { Api } from '../../../api/Api';
-
-const product: IProduct = {
-  id: 1,
-  title: 'Test',
-  description: 'Test card',
-  price: 1000,
-  discountPercentage: 900,
-  rating: 5.0,
-  stock: 11,
-  brand: 'test brand',
-  category: 'category',
-  thumbnail: './src/image.png',
-  images: [],
-};
+import { productMock } from '../../../test/mocks/productMock';
 
 function prepare() {
   const routes = [
@@ -35,7 +21,7 @@ function prepare() {
       element: (
         <productsContext.Provider
           value={{
-            products: [product],
+            products: [productMock],
             isPagination: false,
             isLoading: false,
             total: 0,
@@ -54,7 +40,7 @@ function prepare() {
   ];
 
   const router = createMemoryRouter(routes, {
-    initialEntries: ['/', `/detail/${product.id}`],
+    initialEntries: ['/', `/detail/${productMock.id}`],
     initialIndex: 0,
   });
 
@@ -63,7 +49,7 @@ function prepare() {
 
 describe('Result Item', () => {
   it('should render relevant data', () => {
-    render(<ResultItem id={product.id} title={product.title} />, {
+    render(<ResultItem id={productMock.id} title={productMock.title} />, {
       wrapper: BrowserRouter,
     });
 
@@ -73,9 +59,9 @@ describe('Result Item', () => {
 
     const link = screen.getByRole('link');
 
-    expect(heading).toHaveTextContent(product.title);
+    expect(heading).toHaveTextContent(productMock.title);
     expect(heading).not.toHaveTextContent('');
-    expect(link).toHaveAttribute('href', `/detail/${product.id}`);
+    expect(link).toHaveAttribute('href', `/detail/${productMock.id}`);
   });
 
   it('should clicking on a card opens a detailed card component', async () => {
