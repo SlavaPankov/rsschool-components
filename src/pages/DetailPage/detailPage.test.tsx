@@ -7,6 +7,7 @@ import { DetailPage } from './DetailPage';
 import { Api } from '../../api/Api';
 import { IProduct } from '../../types/interfaces/IProduct';
 import { MainPage } from '../MainPage';
+import { productMock } from '../../test/mocks/productMock';
 
 function prepare() {
   const routes = [
@@ -28,20 +29,6 @@ function prepare() {
   render(<RouterProvider router={router} />);
 }
 
-const product: IProduct = {
-  id: 1,
-  title: 'Test',
-  description: 'Test card',
-  price: 1000,
-  discountPercentage: 900,
-  rating: 5.0,
-  stock: 11,
-  brand: 'test brand',
-  category: 'category',
-  thumbnail: './src/image.png',
-  images: [],
-};
-
 beforeAll(() => {
   window.scrollTo = () => vi.fn();
 });
@@ -51,7 +38,7 @@ describe('Detail page', () => {
     vi.spyOn(Api.prototype, 'getProductById').mockImplementation(
       () =>
         new Promise<IProduct>((res) => {
-          setTimeout(() => res(product), 200);
+          setTimeout(() => res(productMock), 200);
         })
     );
     prepare();
@@ -67,7 +54,7 @@ describe('Detail page', () => {
     vi.spyOn(Api.prototype, 'getProductById').mockImplementation(
       () =>
         new Promise<IProduct>((res) => {
-          setTimeout(() => res(product), 200);
+          setTimeout(() => res(productMock), 200);
         })
     );
     prepare();
@@ -77,13 +64,18 @@ describe('Detail page', () => {
     );
 
     expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent(
-      product.title
+      productMock.title
     );
-    expect(screen.getByRole('img')).toHaveAttribute('src', product.thumbnail);
+    expect(screen.getByRole('img')).toHaveAttribute(
+      'src',
+      productMock.thumbnail
+    );
     expect(screen.getByTestId('paragraph')).toHaveTextContent(
-      product.description
+      productMock.description
     );
-    expect(screen.getByTestId('price')).toHaveTextContent(`${product.price}`);
+    expect(screen.getByTestId('price')).toHaveTextContent(
+      `${productMock.price}`
+    );
   });
 
   it('should clicking the close button hides the component', async () => {
@@ -93,13 +85,13 @@ describe('Detail page', () => {
       expect(screen.getByRole('heading', { level: 2 })).toBeInTheDocument()
     );
     expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent(
-      product.title
+      productMock.title
     );
     const user = userEvent.setup();
     const button = screen.getByRole('button');
 
     expect(button).toBeInTheDocument();
     await user.click(button);
-    expect(screen.queryByText(product.title)).toBeNull();
+    expect(screen.queryByText(productMock.title)).toBeNull();
   });
 });
