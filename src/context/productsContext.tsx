@@ -3,14 +3,14 @@ import { IProduct } from '../types/interfaces/IProduct';
 import { useProductsData } from '../hooks/useProductsData';
 import { searchContext } from './searchContext';
 
-export interface IProductsContext {
+export interface IProductsContextData {
   products: IProduct[];
   isLoading: boolean;
   isPagination: boolean;
   total: number;
 }
 
-export const productsContext = createContext<IProductsContext>({
+export const productsContext = createContext<IProductsContextData>({
   products: [],
   isLoading: false,
   isPagination: false,

@@ -47,6 +47,7 @@ export function Pagination() {
             disabled={isDisabled}
             onClick={handleClick}
             type="button"
+            name="prev"
             data-direction={EPaginationButtonDirection.prev}
           >
             Prev
@@ -56,6 +57,7 @@ export function Pagination() {
             disabled={isDisabled}
             onClick={handleClick}
             type="button"
+            name="next"
             data-direction={EPaginationButtonDirection.next}
           >
             Next

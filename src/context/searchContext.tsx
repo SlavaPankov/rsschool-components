@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
-interface ISearchContextData {
+export interface ISearchContextData {
   search: string;
   page: number;
   limit: number;

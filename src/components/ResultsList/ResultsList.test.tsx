@@ -5,12 +5,12 @@ import { BrowserRouter } from 'react-router-dom';
 import { ResultsList } from './ResultsList';
 import { Api } from '../../api/Api';
 import {
-  IProductsContext,
+  IProductsContextData,
   productsContext,
   UseProductsContextProvider,
 } from '../../context/productsContext';
 
-async function getProductContext(): Promise<IProductsContext> {
+async function getProductContext(): Promise<IProductsContextData> {
   const api = new Api();
   const response = await api.search('');
   return {
