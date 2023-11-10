@@ -50,9 +50,6 @@
     "src/**/*.{ts,tsx,js,jsx}": [
       "prettier --write ./src --config ./.prettierrc",
       "eslint"
-    ],
-    "**/*": [
-      "npx vitest run"
     ]
   }
 }
