@@ -33,23 +33,23 @@ export function DetailPage() {
   };
 
   useEffect(() => {
-    if (!id) {
-      return;
+    if (id) {
+      setPage(Number(searchParams.get('page')) || 1);
+      setSearchParams({});
+      setIsLoading(true);
+
+      api.getProductById(id).then((response) => {
+        setIsLoading(false);
+
+        if (!response) {
+          return;
+        }
+
+        setProduct(response);
+      });
+
+      setIsMount(true);
     }
-
-    setPage(Number(searchParams.get('page')) || 1);
-    setSearchParams({});
-    setIsLoading(true);
-    api.getProductById(id).then((response) => {
-      setIsLoading(false);
-
-      if (!response) {
-        return;
-      }
-
-      setProduct(response);
-    });
-    setIsMount(true);
   }, []);
 
   useEffect((): (() => void) | undefined => {

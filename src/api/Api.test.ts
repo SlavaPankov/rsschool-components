@@ -10,6 +10,7 @@ const server = setupServer(...handlers);
 beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());
 afterAll(() => server.close());
+
 describe('Api test', () => {
   const api = new Api();
 
@@ -29,5 +30,13 @@ describe('Api test', () => {
     const response = await api.search('');
 
     expect(response).toEqual(responseMock);
+  });
+
+  it.fails('should fails getProductById', async () => {
+    await expect(api.getProductById('dasd')).rejects.toBeNull();
+  });
+
+  it.fails('should fails search', async () => {
+    await expect(api.search('fail')).rejects.toBeNull();
   });
 });

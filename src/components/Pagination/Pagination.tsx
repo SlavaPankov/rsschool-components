@@ -8,8 +8,8 @@ import {
 import './pagination.css';
 import { useLocation } from 'react-router-dom';
 import { EPaginationButtonDirection } from '../../types/enums/EPaginationButtonDirection';
-import { searchContext } from '../../context/searchContext';
-import { productsContext } from '../../context/productsContext';
+import { searchContext } from '../../context/searchContext/searchContext';
+import { productsContext } from '../../context/productsContext/productsContext';
 
 export function Pagination() {
   const location = useLocation();
@@ -69,10 +69,17 @@ export function Pagination() {
               id="limit"
               defaultValue={limit}
               onChange={handleChange}
+              data-testid="select"
             >
-              <option value="10">10</option>
-              <option value="20">20</option>
-              <option value="50">50</option>
+              <option data-testid="select-option" value="10">
+                10
+              </option>
+              <option data-testid="select-option" value="20">
+                20
+              </option>
+              <option data-testid="select-option" value="50">
+                50
+              </option>
             </select>
           </label>
         </>

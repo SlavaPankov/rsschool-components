@@ -1,6 +1,12 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
-import { beforeAll, describe, expect, it, vi } from 'vitest';
-import { render, screen, waitFor, within } from '@testing-library/react';
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
+import {
+  cleanup,
+  render,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
 import { DetailPage } from './DetailPage';
@@ -9,7 +15,7 @@ import { IProduct } from '../../types/interfaces/IProduct';
 import { MainPage } from '../MainPage';
 import { productMock } from '../../test/mocks/productMock';
 
-const prepare = () => {
+const prepare = (id = '1') => {
   const routes = [
     {
       path: '/',
@@ -24,7 +30,7 @@ const prepare = () => {
   ];
 
   const router = createMemoryRouter(routes, {
-    initialEntries: ['/', `/detail/1`],
+    initialEntries: ['/', `/detail/${id}`],
     initialIndex: 1,
   });
 
@@ -40,8 +46,21 @@ const getProductByIdMock = () => {
   );
 };
 
+const noProductMock = () => {
+  return vi.spyOn(Api.prototype, 'getProductById').mockImplementation(
+    () =>
+      new Promise<null>((res) => {
+        setTimeout(() => res(null), 200);
+      })
+  );
+};
+
 beforeAll(() => {
   window.scrollTo = () => vi.fn();
+});
+
+afterEach(() => {
+  cleanup();
 });
 
 describe('Detail page', () => {
@@ -53,7 +72,7 @@ describe('Detail page', () => {
       within(getByTestId('detail')).getByText(/loading.../i)
     ).toBeInTheDocument();
     await waitFor(() =>
-      expect(screen.getByRole('heading', { level: 2 })).toBeInTheDocument()
+      within(getByTestId('detail')).getByRole('heading', { level: 2 })
     );
     expect(within(getByTestId('detail')).queryByText(/loading.../i)).toBeNull();
   });
@@ -82,31 +101,50 @@ describe('Detail page', () => {
   });
 
   it('should clicking the close button hides the component', async () => {
-    prepare();
+    const { getByTestId } = prepare();
 
     await waitFor(() =>
-      expect(screen.getByRole('heading', { level: 2 })).toBeInTheDocument()
+      within(getByTestId('detail')).getByRole('heading', { level: 2 })
     );
-    expect(screen.getByRole('heading', { level: 2 })).toHaveTextContent(
-      productMock.title
-    );
+
+    expect(
+      within(getByTestId('detail')).getByRole('heading', { level: 2 })
+    ).toHaveTextContent(productMock.title);
+
     const user = userEvent.setup();
-    const button = screen.getByRole('button', { name: /^cross/i });
+    const button = within(getByTestId('detail')).getByRole('button', {
+      name: /^cross/i,
+    });
 
     expect(button).toBeInTheDocument();
     await user.click(button);
-    expect(screen.queryByText(productMock.title)).toBeNull();
+    expect(screen.queryByTestId('detail')).toBeNull();
   });
 
   it('should clicking out of range hides the component', async () => {
-    prepare();
+    const { getByTestId } = prepare();
     const user = userEvent.setup();
 
     await waitFor(() =>
-      expect(screen.getByRole('heading', { level: 2 })).toBeInTheDocument()
+      within(getByTestId('detail')).getByRole('heading', { level: 2 })
     );
 
     await user.click(screen.getByRole('heading', { level: 1 }));
-    expect(screen.queryByText(productMock.title)).toBeNull();
+    expect(screen.queryByTestId('detail')).toBeNull();
+  });
+
+  it('should render no product', async () => {
+    noProductMock();
+    const { getByTestId } = prepare('asd');
+
+    await waitFor(() =>
+      expect(
+        within(getByTestId('detail')).queryByText(/loading.../i)
+      ).toBeNull()
+    );
+
+    expect(
+      within(getByTestId('detail')).getByText(/Product not found/i)
+    ).toBeInTheDocument();
   });
 });

@@ -2,7 +2,7 @@ import { ChangeEvent, FormEvent, useContext, useState } from 'react';
 import './searchForm.css';
 import { useSearchParams } from 'react-router-dom';
 import { ErrorButton } from '../ErrorButton';
-import { searchContext } from '../../context/searchContext';
+import { searchContext } from '../../context/searchContext/searchContext';
 
 export function SearchForm() {
   const { search, setSearch, setPage } = useContext(searchContext);

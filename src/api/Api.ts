@@ -21,8 +21,8 @@ export class Api implements IApi {
     try {
       const response = await fetch(`${this.baseUrl}/${id}`);
 
-      if (!response.ok) {
-        return null;
+      if (!response.ok || response.status !== 200) {
+        throw Error('Failed to fetch data');
       }
 
       return await response.json();
@@ -38,13 +38,8 @@ export class Api implements IApi {
           (page - 1) * countPerPage
         }&limit=${countPerPage}`
       );
-      if (!response.ok) {
-        return {
-          products: [],
-          limit: countPerPage,
-          skip: (page - 1) * countPerPage,
-          total: 0,
-        };
+      if (!response.ok || response.status !== 200) {
+        throw Error(response.statusText);
       }
 
       const { products, limit, skip, total }: IResponse = await response.json();

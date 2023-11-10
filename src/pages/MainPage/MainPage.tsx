@@ -1,9 +1,9 @@
 import { SearchForm } from '../../components/SearchForm';
 import { Heading } from '../../components/Heading';
 import './mainPage.css';
-import { UseSearchContextProvider } from '../../context/searchContext';
+import { UseSearchContextProvider } from '../../context/searchContext/searchContext';
+import { UseProductsContextProvider } from '../../context/productsContext/productsContext';
 import { Content } from '../../components/Content';
-import { UseProductsContextProvider } from '../../context/productsContext';
 
 export function MainPage() {
   return (

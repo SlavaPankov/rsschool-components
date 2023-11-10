@@ -1,7 +1,7 @@
 import { useContext } from 'react';
 import './resultsList.css';
 import { ResultItem } from './ResultItem';
-import { productsContext } from '../../context/productsContext';
+import { productsContext } from '../../context/productsContext/productsContext';
 import { Loader } from '../Loader';
 
 export function ResultsList() {
