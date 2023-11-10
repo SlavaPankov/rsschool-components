@@ -31,6 +31,7 @@ export function useProductsData(
     }
 
     setIsLoading(true);
+    setIsPagination(false);
     api.search(query, page, limit).then((response) => {
       setProducts(response.products);
       setIsPagination(response.products.length < response.total);
