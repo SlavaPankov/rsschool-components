@@ -1,23 +1,12 @@
-import { ChangeEvent, FormEvent } from 'react';
+import { ChangeEvent, FormEvent, useContext, useState } from 'react';
 import './searchForm.css';
 import { useSearchParams } from 'react-router-dom';
 import { ErrorButton } from '../ErrorButton';
+import { searchContext } from '../../context/searchContext/searchContext';
 
-type ISearchFormProps = {
-  value: string;
-  setValue: (data: string) => void;
-  limit: number;
-  onSubmit: (query: string, page: number, limit: number) => void;
-  setPage: (page: number) => void;
-};
-
-export function SearchForm({
-  value,
-  setValue,
-  limit,
-  onSubmit,
-  setPage,
-}: ISearchFormProps) {
+export function SearchForm() {
+  const { search, setSearch, setPage } = useContext(searchContext);
+  const [value, setValue] = useState<string>(search);
   const [, setSearchParams] = useSearchParams();
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -29,7 +18,7 @@ export function SearchForm({
 
     localStorage.setItem('search', value);
 
-    onSubmit(value, 1, limit);
+    setSearch(value);
     setPage(1);
     setSearchParams({});
   };

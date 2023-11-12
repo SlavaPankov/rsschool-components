@@ -7,14 +7,18 @@ import {
 import { DetailPage } from './pages/DetailPage';
 import { MainPage } from './pages/MainPage';
 import { Fallback } from './components/Fallback';
+import { NotFound } from './components/NotFound';
 
-const router = createBrowserRouter(
-  createRoutesFromElements(
-    <Route path="/" element={<MainPage />} errorElement={<Fallback />}>
+export const routes = createRoutesFromElements(
+  <Route errorElement={<Fallback />}>
+    <Route path="/" element={<MainPage />}>
       <Route path="detail/:id" element={<DetailPage />} />
     </Route>
-  )
+    <Route path="*" element={<NotFound />} />
+  </Route>
 );
+
+const router = createBrowserRouter(routes);
 
 export function App() {
   return <RouterProvider router={router} />;

@@ -9,8 +9,8 @@ export function Card({ product }: ICardProps) {
     <div className="card">
       <h2>{product.title}</h2>
       <img src={product.thumbnail} alt={product.title} />
-      <p>{product.description}</p>
-      <div>price: {product.price} $</div>
+      <p data-testid="paragraph">{product.description}</p>
+      <div data-testid="price">price: {product.price} $</div>
     </div>
   );
 }

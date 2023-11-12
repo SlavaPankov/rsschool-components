@@ -18,7 +18,7 @@ export function DetailPage() {
   const ref = useRef<HTMLDivElement>(null);
   const [isMount, setIsMount] = useState<boolean>(false);
   const [product, setProduct] = useState<IProduct | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
   const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState(0);
 
@@ -33,18 +33,23 @@ export function DetailPage() {
   };
 
   useEffect(() => {
-    if (!id) {
-      return;
-    }
+    if (id) {
+      setPage(Number(searchParams.get('page')) || 1);
+      setSearchParams({});
+      setIsLoading(true);
 
-    setPage(Number(searchParams.get('page')) || 1);
-    setSearchParams({});
-    setIsLoading(true);
-    api.getProductById(id).then((response) => {
-      setProduct(response);
-      setIsLoading(false);
-    });
-    setIsMount(true);
+      api.getProductById(id).then((response) => {
+        setIsLoading(false);
+
+        if (!response) {
+          return;
+        }
+
+        setProduct(response);
+      });
+
+      setIsMount(true);
+    }
   }, []);
 
   useEffect((): (() => void) | undefined => {
@@ -60,16 +65,32 @@ export function DetailPage() {
     };
   }, [isMount]);
 
-  return (
-    <>
-      <div className="detail" ref={ref}>
-        <button className="cross" type="button" onClick={handleClick}>
-          cross
-        </button>
-        {isLoading && <Loader />}
-        {product && !isLoading && <Card product={product} />}
+  if (isLoading) {
+    return (
+      <div className="detail" data-testid="detail" ref={ref}>
+        <Loader />
       </div>
+    );
+  }
+  if (!product) {
+    return (
+      <div className="detail" data-testid="detail" ref={ref}>
+        <h1 className="noProduct">Product not found</h1>
+      </div>
+    );
+  }
+  return (
+    <div className="detail" data-testid="detail" ref={ref}>
+      <button
+        className="cross"
+        type="button"
+        name="close"
+        onClick={handleClick}
+      >
+        cross
+      </button>
+      {product && !isLoading && <Card product={product} />}
       <ScrollRestoration />
-    </>
+    </div>
   );
 }

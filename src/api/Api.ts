@@ -9,7 +9,7 @@ interface IApi {
     page?: number,
     countPerPage?: number
   ) => Promise<IResponse>;
-  getProductById: (id: string) => Promise<IProduct>;
+  getProductById: (id: string) => Promise<IProduct | null>;
 }
 
 export class Api implements IApi {
@@ -17,20 +17,41 @@ export class Api implements IApi {
 
   searchEndpoint = 'search';
 
-  async getProductById(id: string): Promise<IProduct> {
-    const response = await fetch(`${this.baseUrl}/${id}`);
+  async getProductById(id: string): Promise<IProduct | null> {
+    try {
+      const response = await fetch(`${this.baseUrl}/${id}`);
 
-    return response.json();
+      if (!response.ok || response.status !== 200) {
+        throw Error('Failed to fetch data');
+      }
+
+      return await response.json();
+    } catch (error) {
+      return null;
+    }
   }
 
   async search(query: string, page = 1, countPerPage = 10): Promise<IResponse> {
-    const response = await fetch(
-      `${this.baseUrl}/${this.searchEndpoint}?q=${query.trim()}&skip=${
-        (page - 1) * countPerPage
-      }&limit=${countPerPage}`
-    );
-    const { products, limit, skip, total }: IResponse = await response.json();
+    try {
+      const response = await fetch(
+        `${this.baseUrl}/${this.searchEndpoint}?q=${query.trim()}&skip=${
+          (page - 1) * countPerPage
+        }&limit=${countPerPage}`
+      );
+      if (!response.ok || response.status !== 200) {
+        throw Error(response.statusText);
+      }
 
-    return { products, limit, skip, total };
+      const { products, limit, skip, total }: IResponse = await response.json();
+
+      return { products, limit, skip, total };
+    } catch (error) {
+      return {
+        products: [],
+        limit: countPerPage,
+        skip: (page - 1) * countPerPage,
+        total: 0,
+      };
+    }
   }
 }
