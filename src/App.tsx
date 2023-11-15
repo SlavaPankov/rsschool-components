@@ -4,10 +4,12 @@ import {
   Route,
   RouterProvider,
 } from 'react-router-dom';
+import { Provider } from 'react-redux';
 import { DetailPage } from './pages/DetailPage';
 import { MainPage } from './pages/MainPage';
 import { Fallback } from './components/Fallback';
 import { NotFound } from './components/NotFound';
+import store from './store/store';
 
 export const routes = createRoutesFromElements(
   <Route errorElement={<Fallback />}>
@@ -21,5 +23,9 @@ export const routes = createRoutesFromElements(
 const router = createBrowserRouter(routes);
 
 export function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
+  );
 }
