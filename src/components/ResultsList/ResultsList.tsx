@@ -1,25 +1,26 @@
-import { useContext } from 'react';
 import './resultsList.css';
 import { ResultItem } from './ResultItem';
-import { productsContext } from '../../context/productsContext/productsContext';
 import { Loader } from '../Loader';
+import { useGetProductsQuery } from '../../store/products/products';
+import { useAppSelector } from '../../hooks/useAppSelector';
 
 export function ResultsList() {
-  const { products, isLoading } = useContext(productsContext);
+  const { search, page, limit } = useAppSelector((state) => state.options);
+  const { data, isFetching } = useGetProductsQuery({ search, page, limit });
 
-  if (isLoading) {
+  if (isFetching) {
     return <Loader />;
   }
 
-  if (products.length === 0) {
+  if (!data || !data.products || !data.products.length) {
     return <div>No results</div>;
   }
 
   return (
     <div>
       <ul className="list">
-        {products.map((item) => (
-          <ResultItem id={item.id} title={item.title} key={item.id} />
+        {data.products.map((product) => (
+          <ResultItem id={product.id} title={product.title} key={product.id} />
         ))}
       </ul>
     </div>

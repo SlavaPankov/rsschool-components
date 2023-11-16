@@ -1,41 +1,37 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-
-interface IOptions {
-  page: number;
-  countPerPage: number;
-  searchValue: string;
-}
+import { EOptions } from '../../types/enums/EOptions';
 
 interface IOptionsState {
-  store: IOptions;
+  page: number;
+  limit: number;
+  search: string;
 }
 
 const initialState: IOptionsState = {
-  store: {
-    page: 1,
-    countPerPage: 10,
-    searchValue: '',
-  },
+  page:
+    Number(new URLSearchParams(window.location.search).get(EOptions.page)) || 1,
+  limit: Number(localStorage.getItem(EOptions.limit)) || 10,
+  search: localStorage.getItem(EOptions.search) || '',
 };
 
 export const optionsSlice = createSlice({
   name: 'optionsSlice',
   initialState,
   reducers: {
-    setPage: ({ store }, payload: PayloadAction<number>) => {
-      store.page = payload.payload;
+    setPage: (state, payload: PayloadAction<number>) => {
+      state.page = payload.payload;
     },
 
-    setCountPerPage: ({ store }, payload: PayloadAction<number>) => {
-      store.countPerPage = payload.payload;
+    setLimit: (state, payload: PayloadAction<number>) => {
+      state.limit = payload.payload;
     },
 
-    setSearchValue: ({ store }, payload: PayloadAction<string>) => {
-      store.searchValue = payload.payload;
+    setSearchValue: (state, payload: PayloadAction<string>) => {
+      state.search = payload.payload;
     },
   },
 });
 
-export const { setPage, setCountPerPage } = optionsSlice.actions;
+export const { setPage, setLimit, setSearchValue } = optionsSlice.actions;
 export default optionsSlice.reducer;
