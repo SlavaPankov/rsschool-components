@@ -9,12 +9,10 @@ import {
 } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { http, HttpResponse } from 'msw';
 import { ResultsList } from './ResultsList';
 import store from '../../store/store';
 import { productsApi } from '../../store/products/products';
-import { emptyResponseMock } from '../../test/mocks/responseMock';
-import { server } from '../../test/setupTests';
+import { setSearchValue } from '../../store/options/options';
 
 afterEach(() => {
   cleanup();
@@ -52,11 +50,12 @@ describe('Results list', () => {
   });
 
   it('should render empty message', async () => {
-    server.use(
-      http.get('https://dummyjson.com/products/search', () => {
-        return HttpResponse.json(emptyResponseMock);
-      })
-    );
+    store.dispatch(setSearchValue('fail'));
+    // server.use(
+    //   http.get('https://dummyjson.com/products/search', () => {
+    //     return HttpResponse.json(emptyResponseMock);
+    //   })
+    // );
 
     const { getByText } = wrapper();
 

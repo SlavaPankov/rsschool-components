@@ -2,8 +2,9 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
-import { UseSearchContextProvider } from '../../context/searchContext/searchContext';
+import { Provider } from 'react-redux';
 import { SearchForm } from './SearchForm';
+import store from '../../store/store';
 
 const testInput = 'test';
 
@@ -14,9 +15,9 @@ afterEach(() => {
 describe('Search form', () => {
   it('should clicking the Search button saves the entered value to the local storage', async () => {
     render(
-      <UseSearchContextProvider>
+      <Provider store={store}>
         <SearchForm />
-      </UseSearchContextProvider>,
+      </Provider>,
       { wrapper: BrowserRouter }
     );
     const user = userEvent.setup();
@@ -31,9 +32,9 @@ describe('Search form', () => {
 
   it('should retrieves the value from the local storage upon mounting', () => {
     render(
-      <UseSearchContextProvider>
+      <Provider store={store}>
         <SearchForm />
-      </UseSearchContextProvider>,
+      </Provider>,
       { wrapper: BrowserRouter }
     );
 
