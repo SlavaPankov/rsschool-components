@@ -9,11 +9,11 @@ import {
 } from '@testing-library/react';
 import { createMemoryRouter, RouterProvider } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
+import { Provider } from 'react-redux';
 import { DetailPage } from './DetailPage';
-import { Api } from '../../api/Api';
-import { IProduct } from '../../types/interfaces/IProduct';
 import { MainPage } from '../MainPage';
 import { productMock } from '../../test/mocks/productMock';
+import store from '../../store/store';
 
 const prepare = (id = '1') => {
   const routes = [
@@ -34,24 +34,10 @@ const prepare = (id = '1') => {
     initialIndex: 1,
   });
 
-  return render(<RouterProvider router={router} />);
-};
-
-const getProductByIdMock = () => {
-  return vi.spyOn(Api.prototype, 'getProductById').mockImplementation(
-    () =>
-      new Promise<IProduct>((res) => {
-        setTimeout(() => res(productMock), 200);
-      })
-  );
-};
-
-const noProductMock = () => {
-  return vi.spyOn(Api.prototype, 'getProductById').mockImplementation(
-    () =>
-      new Promise<null>((res) => {
-        setTimeout(() => res(null), 200);
-      })
+  return render(
+    <Provider store={store}>
+      <RouterProvider router={router} />
+    </Provider>
   );
 };
 
@@ -65,7 +51,6 @@ afterEach(() => {
 
 describe('Detail page', () => {
   it('should loading indicator is displayed while fetching data', async () => {
-    getProductByIdMock();
     const { getByTestId } = prepare();
 
     expect(
@@ -78,7 +63,6 @@ describe('Detail page', () => {
   });
 
   it('should the detailed card component correctly displays the detailed card data', async () => {
-    getProductByIdMock();
     prepare();
 
     await waitFor(() =>
@@ -134,7 +118,6 @@ describe('Detail page', () => {
   });
 
   it('should render no product', async () => {
-    noProductMock();
     const { getByTestId } = prepare('asd');
 
     await waitFor(() =>
