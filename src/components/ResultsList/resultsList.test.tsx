@@ -1,13 +1,5 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
-import {
-  afterAll,
-  afterEach,
-  beforeAll,
-  describe,
-  expect,
-  it,
-  vi,
-} from 'vitest';
+import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
 import {
   cleanup,
   render,
@@ -17,12 +9,12 @@ import {
 } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { setupServer } from 'msw/node';
+import { Provider } from 'react-redux';
+import { http, HttpResponse } from 'msw';
 import { ResultsList } from './ResultsList';
-import { UseProductsContextProvider } from '../../context/productsContext/productsContext';
 import { handlers } from '../../test/mocks/handlers';
-import { UseSearchContextProvider } from '../../context/searchContext/searchContext';
-import { Api } from '../../api/Api';
-import { IResponse } from '../../types/interfaces/IResponse';
+import store from '../../store/store';
+import { productsApi } from '../../store/products/products';
 import { emptyResponseMock } from '../../test/mocks/responseMock';
 
 const server = setupServer(...handlers);
@@ -31,26 +23,16 @@ beforeAll(() => server.listen());
 afterEach(() => {
   server.resetHandlers();
   cleanup();
+  store.dispatch(productsApi.util?.resetApiState());
 });
 afterAll(() => server.close());
 
 const wrapper = () => {
   return render(
-    <UseSearchContextProvider>
-      <UseProductsContextProvider>
-        <ResultsList />
-      </UseProductsContextProvider>
-    </UseSearchContextProvider>,
+    <Provider store={store}>
+      <ResultsList />
+    </Provider>,
     { wrapper: BrowserRouter }
-  );
-};
-
-const searchMock = () => {
-  return vi.spyOn(Api.prototype, 'search').mockImplementation(
-    () =>
-      new Promise<IResponse>((res) => {
-        setTimeout(() => res(emptyResponseMock), 200);
-      })
   );
 };
 
@@ -76,7 +58,12 @@ describe('Results list', () => {
   });
 
   it('should render empty message', async () => {
-    searchMock();
+    server.use(
+      http.get('https://dummyjson.com/products/search', () => {
+        return HttpResponse.json(emptyResponseMock);
+      })
+    );
+
     const { getByText } = wrapper();
 
     await waitFor(() => getByText(/^No results/));

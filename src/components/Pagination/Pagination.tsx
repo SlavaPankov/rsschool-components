@@ -56,7 +56,7 @@ export function Pagination() {
   return (
     <div className="pagination">
       <button
-        disabled={isDisabled || isFetching}
+        disabled={isDisabled}
         onClick={handleClick}
         type="button"
         name="prev"
@@ -66,7 +66,7 @@ export function Pagination() {
       </button>
       <button type="button">{page}</button>
       <button
-        disabled={isDisabled || isFetching}
+        disabled={isDisabled}
         onClick={handleClick}
         type="button"
         name="next"

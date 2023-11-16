@@ -64,8 +64,11 @@ describe('Pagination', () => {
     prepare();
     const user = userEvent.setup();
 
+    const button = screen.getByRole('button', { name: /Next/ });
     const prevButton = screen.getByRole('button', { name: /prev/i });
+    await user.click(button);
     await user.click(prevButton);
+    await waitFor(() => expect(prevButton).not.toBeDisabled());
 
     expect(mockSearchParams).toStrictEqual({ page: '2' });
   });
