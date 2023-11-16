@@ -1,22 +1,19 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
 import { afterEach, describe, expect, it, vi } from 'vitest';
-import { cleanup, fireEvent, render, screen } from '@testing-library/react';
+import {
+  cleanup,
+  fireEvent,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { useState } from 'react';
 import userEvent from '@testing-library/user-event';
-import {
-  IProductsContextData,
-  productsContext,
-} from '../../context/productsContext/productsContext';
+import { Provider } from 'react-redux';
 import { Pagination } from './Pagination';
-import { UseSearchContextProvider } from '../../context/searchContext/searchContext';
+import store from '../../store/store';
 
-const productContextValue: IProductsContextData = {
-  products: [],
-  isLoading: false,
-  isPagination: true,
-  total: 100,
-};
 let mockSearchParams: string = '';
 
 afterEach(() => {
@@ -25,11 +22,9 @@ afterEach(() => {
 
 const prepare = () => {
   return render(
-    <UseSearchContextProvider>
-      <productsContext.Provider value={productContextValue}>
-        <Pagination />
-      </productsContext.Provider>
-    </UseSearchContextProvider>,
+    <Provider store={store}>
+      <Pagination />
+    </Provider>,
     { wrapper: MemoryRouter }
   );
 };
@@ -59,10 +54,10 @@ describe('Pagination', () => {
     const user = userEvent.setup();
 
     const button = screen.getByRole('button', { name: /Next/ });
-    await user.click(button);
+    await waitFor(() => expect(button).not.toBeDisabled());
     await user.click(button);
 
-    expect(mockSearchParams).toStrictEqual({ page: '3' });
+    expect(mockSearchParams).toStrictEqual({ page: '2' });
   });
 
   it('should updates URL query parameter when click prev button', async () => {

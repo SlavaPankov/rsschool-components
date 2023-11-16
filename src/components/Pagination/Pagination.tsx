@@ -14,7 +14,6 @@ export function Pagination() {
   const { limit, page, search } = useAppSelector((state) => state.options);
   const { data, isFetching } = useGetProductsQuery({ search, page, limit });
   const [isDisabled, setIsDisabled] = useState<boolean>(false);
-  const [isPagination, setIsPagination] = useState<boolean>(false);
 
   const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
     localStorage.setItem('limit', event.target.value);
@@ -43,7 +42,7 @@ export function Pagination() {
       return;
     }
 
-    setIsPagination(data.products.length < data.total);
+    setIsDisabled(data.products.length < data.limit);
   }, [data]);
 
   useEffect(() => {
@@ -56,50 +55,46 @@ export function Pagination() {
 
   return (
     <div className="pagination">
-      {isPagination && (
-        <>
-          <button
-            disabled={isDisabled || isFetching}
-            onClick={handleClick}
-            type="button"
-            name="prev"
-            data-direction={EPaginationButtonDirection.prev}
-          >
-            Prev
-          </button>
-          <button type="button">{page}</button>
-          <button
-            disabled={isDisabled || isFetching}
-            onClick={handleClick}
-            type="button"
-            name="next"
-            data-direction={EPaginationButtonDirection.next}
-          >
-            Next
-          </button>
-          <label className="limit" htmlFor="limit">
-            Limit:
-            <select
-              disabled={isFetching}
-              name="limit"
-              id="limit"
-              defaultValue={limit}
-              onChange={handleChange}
-              data-testid="select"
-            >
-              <option data-testid="select-option" value="10">
-                10
-              </option>
-              <option data-testid="select-option" value="20">
-                20
-              </option>
-              <option data-testid="select-option" value="50">
-                50
-              </option>
-            </select>
-          </label>
-        </>
-      )}
+      <button
+        disabled={isDisabled || isFetching}
+        onClick={handleClick}
+        type="button"
+        name="prev"
+        data-direction={EPaginationButtonDirection.prev}
+      >
+        Prev
+      </button>
+      <button type="button">{page}</button>
+      <button
+        disabled={isDisabled || isFetching}
+        onClick={handleClick}
+        type="button"
+        name="next"
+        data-direction={EPaginationButtonDirection.next}
+      >
+        Next
+      </button>
+      <label className="limit" htmlFor="limit">
+        Limit:
+        <select
+          disabled={isFetching}
+          name="limit"
+          id="limit"
+          defaultValue={limit}
+          onChange={handleChange}
+          data-testid="select"
+        >
+          <option data-testid="select-option" value="10">
+            10
+          </option>
+          <option data-testid="select-option" value="20">
+            20
+          </option>
+          <option data-testid="select-option" value="50">
+            50
+          </option>
+        </select>
+      </label>
     </div>
   );
 }
