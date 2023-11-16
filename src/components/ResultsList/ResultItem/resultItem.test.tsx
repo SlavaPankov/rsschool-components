@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
-import { afterEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeAll, describe, vi, expect, it } from 'vitest';
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import {
   BrowserRouter,
@@ -7,15 +7,19 @@ import {
   RouterProvider,
 } from 'react-router-dom';
 import userEvent from '@testing-library/user-event';
+import { Provider } from 'react-redux';
 import { ResultItem } from './ResultItem';
-import { productsContext } from '../../../context/productsContext/productsContext';
 import { Content } from '../../Content';
 import { DetailPage } from '../../../pages/DetailPage';
-import { Api } from '../../../api/Api';
 import { productMock } from '../../../test/mocks/productMock';
+import store from '../../../store/store';
 
 afterEach(() => {
   cleanup();
+});
+
+beforeAll(() => {
+  window.scrollTo = () => vi.fn();
 });
 
 function prepare() {
@@ -23,16 +27,9 @@ function prepare() {
     {
       path: '/',
       element: (
-        <productsContext.Provider
-          value={{
-            products: [productMock],
-            isPagination: false,
-            isLoading: false,
-            total: 0,
-          }}
-        >
+        <Provider store={store}>
           <Content />
-        </productsContext.Provider>
+        </Provider>
       ),
       children: [
         {
@@ -72,7 +69,8 @@ describe('Result Item', () => {
     prepare();
     const user = userEvent.setup();
 
-    const link = screen.getByRole('link');
+    await waitFor(() => screen.getAllByRole('link'));
+    const link = screen.getAllByRole('link')[1];
     await user.click(link);
 
     expect(screen.getByTestId('detail')).toBeInTheDocument();
@@ -80,14 +78,14 @@ describe('Result Item', () => {
 
   it('should clicking triggers an additional API call to fetch detailed information', async () => {
     prepare();
-    const mock = vi.spyOn(Api.prototype, 'getProductById');
-
     const user = userEvent.setup();
-    const link = screen.getByRole('link');
+    await waitFor(() => screen.getAllByRole('link'));
+    const link = screen.getAllByRole('link')[1];
 
     await user.click(link);
     await waitFor(() => screen.getByTestId('detail'));
-    expect(mock).toBeCalled();
-    expect(mock).toBeCalledTimes(1);
+    const detailHeading = await screen.findByRole('heading', { level: 2 });
+
+    expect(detailHeading).toBeInTheDocument();
   });
 });

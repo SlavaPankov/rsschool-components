@@ -1,5 +1,5 @@
 /* eslint-disable react/jsx-no-constructed-context-values */
-import { afterAll, afterEach, beforeAll, describe, expect, it } from 'vitest';
+import { afterEach, describe, expect, it } from 'vitest';
 import {
   cleanup,
   render,
@@ -8,24 +8,18 @@ import {
   within,
 } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
-import { setupServer } from 'msw/node';
 import { Provider } from 'react-redux';
 import { http, HttpResponse } from 'msw';
 import { ResultsList } from './ResultsList';
-import { handlers } from '../../test/mocks/handlers';
 import store from '../../store/store';
 import { productsApi } from '../../store/products/products';
 import { emptyResponseMock } from '../../test/mocks/responseMock';
+import { server } from '../../test/setupTests';
 
-const server = setupServer(...handlers);
-
-beforeAll(() => server.listen());
 afterEach(() => {
-  server.resetHandlers();
   cleanup();
   store.dispatch(productsApi.util?.resetApiState());
 });
-afterAll(() => server.close());
 
 const wrapper = () => {
   return render(
