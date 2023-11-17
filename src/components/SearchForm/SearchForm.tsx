@@ -1,11 +1,15 @@
-import { ChangeEvent, FormEvent, useContext, useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import './searchForm.css';
 import { useSearchParams } from 'react-router-dom';
 import { ErrorButton } from '../ErrorButton';
-import { searchContext } from '../../context/searchContext/searchContext';
+import { EOptions } from '../../types/enums/EOptions';
+import { useAppSelector } from '../../hooks/useAppSelector';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { setPage, setSearchValue } from '../../store/options/options';
 
 export function SearchForm() {
-  const { search, setSearch, setPage } = useContext(searchContext);
+  const dispatch = useAppDispatch();
+  const { search } = useAppSelector((store) => store.options);
   const [value, setValue] = useState<string>(search);
   const [, setSearchParams] = useSearchParams();
 
@@ -16,10 +20,10 @@ export function SearchForm() {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    localStorage.setItem('search', value);
+    localStorage.setItem(EOptions.search, value);
 
-    setSearch(value);
-    setPage(1);
+    dispatch(setSearchValue(value));
+    dispatch(setPage(1));
     setSearchParams({});
   };
 

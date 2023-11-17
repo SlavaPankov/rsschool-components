@@ -1,25 +1,36 @@
-import { useContext } from 'react';
 import './resultsList.css';
+import { useEffect } from 'react';
 import { ResultItem } from './ResultItem';
-import { productsContext } from '../../context/productsContext/productsContext';
 import { Loader } from '../Loader';
+import { useGetProductsQuery } from '../../store/products/products';
+import { useAppSelector } from '../../hooks/useAppSelector';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { setIsProductsLoading } from '../../store/options/options';
 
 export function ResultsList() {
-  const { products, isLoading } = useContext(productsContext);
+  const dispatch = useAppDispatch();
+  const { search, page, limit, isProductsLoading } = useAppSelector(
+    (state) => state.options
+  );
+  const { data, isFetching } = useGetProductsQuery({ search, page, limit });
 
-  if (isLoading) {
+  useEffect(() => {
+    dispatch(setIsProductsLoading(isFetching));
+  }, [isFetching]);
+
+  if (isProductsLoading) {
     return <Loader />;
   }
 
-  if (products.length === 0) {
+  if (!data || !data.products || !data.products.length) {
     return <div>No results</div>;
   }
 
   return (
     <div>
       <ul className="list">
-        {products.map((item) => (
-          <ResultItem id={item.id} title={item.title} key={item.id} />
+        {data.products.map((product) => (
+          <ResultItem id={product.id} title={product.title} key={product.id} />
         ))}
       </ul>
     </div>
