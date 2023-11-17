@@ -6,6 +6,8 @@ interface IOptionsState {
   page: number;
   limit: number;
   search: string;
+  isProductsLoading: boolean;
+  isProductLoading: boolean;
 }
 
 const initialState: IOptionsState = {
@@ -13,25 +15,41 @@ const initialState: IOptionsState = {
     Number(new URLSearchParams(window.location.search).get(EOptions.page)) || 1,
   limit: Number(localStorage.getItem(EOptions.limit)) || 10,
   search: localStorage.getItem(EOptions.search) || '',
+  isProductsLoading: false,
+  isProductLoading: false,
 };
 
 export const optionsSlice = createSlice({
   name: 'optionsSlice',
   initialState,
   reducers: {
-    setPage: (state, payload: PayloadAction<number>) => {
-      state.page = payload.payload;
+    setPage: (state, action: PayloadAction<number>) => {
+      state.page = action.payload;
     },
 
-    setLimit: (state, payload: PayloadAction<number>) => {
-      state.limit = payload.payload;
+    setLimit: (state, action: PayloadAction<number>) => {
+      state.limit = action.payload;
     },
 
-    setSearchValue: (state, payload: PayloadAction<string>) => {
-      state.search = payload.payload;
+    setSearchValue: (state, action: PayloadAction<string>) => {
+      state.search = action.payload;
+    },
+
+    setIsProductsLoading: (state, action: PayloadAction<boolean>) => {
+      state.isProductsLoading = action.payload;
+    },
+
+    setIsProductLoading: (state, action: PayloadAction<boolean>) => {
+      state.isProductLoading = action.payload;
     },
   },
 });
 
-export const { setPage, setLimit, setSearchValue } = optionsSlice.actions;
+export const {
+  setPage,
+  setLimit,
+  setSearchValue,
+  setIsProductsLoading,
+  setIsProductLoading,
+} = optionsSlice.actions;
 export default optionsSlice.reducer;

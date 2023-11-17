@@ -1,14 +1,24 @@
 import './resultsList.css';
+import { useEffect } from 'react';
 import { ResultItem } from './ResultItem';
 import { Loader } from '../Loader';
 import { useGetProductsQuery } from '../../store/products/products';
 import { useAppSelector } from '../../hooks/useAppSelector';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { setIsProductsLoading } from '../../store/options/options';
 
 export function ResultsList() {
-  const { search, page, limit } = useAppSelector((state) => state.options);
+  const dispatch = useAppDispatch();
+  const { search, page, limit, isProductsLoading } = useAppSelector(
+    (state) => state.options
+  );
   const { data, isFetching } = useGetProductsQuery({ search, page, limit });
 
-  if (isFetching) {
+  useEffect(() => {
+    dispatch(setIsProductsLoading(isFetching));
+  }, [isFetching]);
+
+  if (isProductsLoading) {
     return <Loader />;
   }
 

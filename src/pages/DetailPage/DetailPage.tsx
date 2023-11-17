@@ -10,10 +10,15 @@ import { Loader } from '../../components/Loader';
 import { EOptions } from '../../types/enums/EOptions';
 import { useGetProductQuery } from '../../store/products/products';
 import './detailPage.css';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { setIsProductLoading } from '../../store/options/options';
+import { useAppSelector } from '../../hooks/useAppSelector';
 
 export function DetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { isProductLoading } = useAppSelector((state) => state.options);
   const { data: product, isFetching } = useGetProductQuery(Number(id));
   const ref = useRef<HTMLDivElement>(null);
   const [isMount, setIsMount] = useState<boolean>(false);
@@ -51,7 +56,11 @@ export function DetailPage() {
     };
   }, [isMount]);
 
-  if (isFetching) {
+  useEffect(() => {
+    dispatch(setIsProductLoading(isFetching));
+  }, [isFetching]);
+
+  if (isProductLoading) {
     return (
       <div className="detail" data-testid="detail" ref={ref}>
         <Loader />
