@@ -8,12 +8,13 @@ module.exports = {
     "airbnb-typescript",
     "airbnb/hooks",
     "plugin:react/recommended",
+    "next/core-web-vitals",
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended"
   ],
   "overrides": [],
   "parser": "@typescript-eslint/parser",
-  "ignorePatterns": [".eslintrc.cjs", "vite.config.ts"],
+  "ignorePatterns": [".eslintrc.cjs", "vite.config.ts", "next.config.js"],
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module",
