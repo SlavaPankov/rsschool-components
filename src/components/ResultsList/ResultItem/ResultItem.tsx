@@ -1,5 +1,6 @@
-import './resultItem.css';
-import { Link, useLocation } from 'react-router-dom';
+import Link from 'next/link';
+
+import styles from '@/styles/resultItem.module.css';
 
 type IResultItemProps = {
   id: number;
@@ -7,12 +8,10 @@ type IResultItemProps = {
 };
 
 export function ResultItem({ id, title }: IResultItemProps) {
-  const { search } = useLocation();
-
   return (
-    <li className="item">
-      <Link to={{ pathname: `/detail/${id}`, search: `${search}` }}>
-        <h3 className="item-heading">{title}</h3>
+    <li className={styles.item}>
+      <Link href={{ pathname: `/detail/${id}` }}>
+        <h3 className={styles.itemHeading}>{title}</h3>
       </Link>
     </li>
   );

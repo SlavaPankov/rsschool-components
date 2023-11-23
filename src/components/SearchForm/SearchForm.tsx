@@ -1,37 +1,40 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
-import './searchForm.css';
-import { useSearchParams } from 'react-router-dom';
-import { ErrorButton } from '../ErrorButton';
-import { EOptions } from '../../types/enums/EOptions';
-import { useAppSelector } from '../../hooks/useAppSelector';
-import { useAppDispatch } from '../../hooks/useAppDispatch';
-import { setPage, setSearchValue } from '../../store/options/options';
+import { useRouter } from 'next/router';
+import styles from '@/styles/searchForm.module.css';
+import { ErrorButton } from '@/components/ErrorButton';
+import { useAppDispatch } from '@/hooks/useAppDispatch';
+import { setPage, setSearchValue } from '@/store/options/options';
 
-export function SearchForm() {
+export function SearchForm({ search }: { search: string }) {
+  const router = useRouter();
   const dispatch = useAppDispatch();
-  const { search } = useAppSelector((store) => store.options);
   const [value, setValue] = useState<string>(search);
-  const [, setSearchParams] = useSearchParams();
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    localStorage.setItem(EOptions.search, value);
 
     dispatch(setSearchValue(value));
     dispatch(setPage(1));
-    setSearchParams({});
+
+    if (!value) {
+      delete router.query.search;
+    } else {
+      router.query.search = value;
+    }
+
+    await router.push({ pathname: router.pathname, query: router.query });
   };
 
   return (
-    <form className="form" onSubmit={handleSubmit}>
-      <label className="label" htmlFor="search">
+    <form className={styles.form} onSubmit={handleSubmit}>
+      <label className={styles.label} htmlFor="search">
+        <span className={styles.span}>Search:</span>
         <input
-          className="input"
+          className={styles.input}
           type="text"
           id="search"
           name="search"

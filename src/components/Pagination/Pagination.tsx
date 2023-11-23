@@ -1,83 +1,70 @@
-import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
-import './pagination.css';
-import { useLocation, useSearchParams } from 'react-router-dom';
-import { EPaginationButtonDirection } from '../../types/enums/EPaginationButtonDirection';
-import { useAppDispatch } from '../../hooks/useAppDispatch';
-import { useAppSelector } from '../../hooks/useAppSelector';
-import { setLimit, setPage } from '../../store/options/options';
-import { useGetProductsQuery } from '../../store/products/products';
+import { ChangeEvent } from 'react';
+import { useRouter } from 'next/router';
+import styles from '@/styles/pagination.module.css';
 
-export function Pagination() {
-  const location = useLocation();
-  const [, setSearchParams] = useSearchParams();
-  const dispatch = useAppDispatch();
-  const { limit, page, search } = useAppSelector((state) => state.options);
-  const { data, isFetching } = useGetProductsQuery({ search, page, limit });
-  const [isDisabled, setIsDisabled] = useState<boolean>(false);
+interface IPaginationProps {
+  page: number;
+  limit: number;
+  total: number;
+}
 
-  const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    localStorage.setItem('limit', event.target.value);
-    dispatch(setLimit(Number(event.target.value)));
-    dispatch(setPage(1));
-  };
+export function Pagination({ page, limit, total }: IPaginationProps) {
+  const router = useRouter();
 
-  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
-    if (
-      event.currentTarget.dataset.direction === EPaginationButtonDirection.next
-    ) {
-      if (page * limit !== data?.total) {
-        dispatch(setPage(page + 1));
-      }
-    } else if (page > 1) {
-      dispatch(setPage(page - 1));
-    }
-  };
-
-  useEffect(() => {
-    setIsDisabled(location.pathname.includes('detail'));
-  }, [location]);
-
-  useEffect(() => {
-    if (!data) {
-      return;
-    }
-
-    setIsDisabled(data.products.length < data.limit);
-  }, [data]);
-
-  useEffect(() => {
-    if (page > 1) {
-      setSearchParams({ page: `${page}` });
+  const handleChange = async (event: ChangeEvent<HTMLSelectElement>) => {
+    if (Number(event.target.value) === 10) {
+      delete router.query.limit;
     } else {
-      setSearchParams({});
+      router.query.limit = `${event.target.value}`;
     }
-  }, [page]);
+
+    delete router.query.page;
+
+    await router.push({ pathname: router.pathname, query: router.query });
+  };
+
+  const handleNextClick = async () => {
+    if (page * limit !== total) {
+      router.query.page = `${page + 1}`;
+    }
+
+    await router.push({ pathname: router.pathname, query: router.query });
+  };
+
+  const handlePrevClick = async () => {
+    if (page > 1) {
+      router.query.page = `${page - 1}`;
+    }
+
+    if (page - 1 === 1) {
+      delete router.query.page;
+    }
+
+    await router.push({ pathname: router.pathname, query: router.query });
+  };
 
   return (
-    <div className="pagination">
+    <div className={styles.pagination}>
       <button
-        disabled={isDisabled}
-        onClick={handleClick}
+        onClick={handlePrevClick}
+        disabled={page === 1}
         type="button"
         name="prev"
-        data-direction={EPaginationButtonDirection.prev}
       >
         Prev
       </button>
       <button type="button">{page}</button>
       <button
-        disabled={isDisabled}
-        onClick={handleClick}
+        onClick={handleNextClick}
+        disabled={page * limit === total}
         type="button"
         name="next"
-        data-direction={EPaginationButtonDirection.next}
       >
         Next
       </button>
-      <label className="limit" htmlFor="limit">
+      <label className={styles.limit} htmlFor="limit">
         Limit:
         <select
-          disabled={isFetching}
           name="limit"
           id="limit"
           defaultValue={limit}
