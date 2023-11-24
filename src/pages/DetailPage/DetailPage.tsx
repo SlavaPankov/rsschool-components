@@ -5,14 +5,14 @@ import {
   useSearchParams,
 } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
-import { Card } from '../../components/Card';
-import { Loader } from '../../components/Loader';
-import { EOptions } from '../../types/enums/EOptions';
-import { useGetProductQuery } from '../../store/products/products';
+import { Card } from '@/components/Card';
+import { Loader } from '@/components/Loader';
+import { EOptions } from '@/types/enums/EOptions';
+import { useGetProductQuery } from '@/store/products/products';
 import './detailPage.css';
-import { useAppDispatch } from '../../hooks/useAppDispatch';
-import { setIsProductLoading } from '../../store/options/options';
-import { useAppSelector } from '../../hooks/useAppSelector';
+import { useAppDispatch } from '@/hooks/useAppDispatch';
+import { setIsProductLoading } from '@/store/options/options';
+import { useAppSelector } from '@/hooks/useAppSelector';
 
 export function DetailPage() {
   const { id } = useParams();

@@ -5,20 +5,26 @@ import { wrapper } from '@/store/store';
 import { getRunningQueriesThunk, productsApi } from '@/store/products/products';
 import { IResponse } from '@/types/interfaces/IResponse';
 import { ResultsList } from '@/components/ResultsList';
-import { setLimit, setPage, setSearchValue } from '@/store/options/options';
+// import { setLimit, setPage, setSearchValue } from '@/store/options/options';
 import { Pagination } from '@/components/Pagination';
-import { useRouter } from 'next/router';
+import { ReactNode } from 'react';
+import { setStoreValues } from '@/utils/setStoreValues';
 
 interface IHomeProps {
   data: IResponse;
   page: number;
   limit: number;
   search: string;
+  children: ReactNode;
 }
 
-export default function Home({ data, page, limit, search }: IHomeProps) {
-  const router = useRouter();
-
+export default function Home({
+  data,
+  page,
+  limit,
+  search,
+  children,
+}: IHomeProps) {
   return (
     <>
       <Head>
@@ -34,7 +40,7 @@ export default function Home({ data, page, limit, search }: IHomeProps) {
               <Pagination page={page} limit={limit} total={data.total} />
             )}
           </div>
-          {router.pathname.includes('/detail') && <div>details</div>}
+          {children}
         </div>
       </main>
     </>
@@ -43,23 +49,7 @@ export default function Home({ data, page, limit, search }: IHomeProps) {
 
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) => async (context) => {
-    const {
-      search: searchValue,
-      page: currentPage,
-      limit: currentLimit,
-    } = context.query;
-
-    if (searchValue && typeof searchValue === 'string') {
-      store.dispatch(setSearchValue(searchValue));
-    }
-
-    if (currentPage && typeof currentPage === 'string') {
-      store.dispatch(setPage(Number(currentPage)));
-    }
-
-    if (currentLimit && typeof currentLimit === 'string') {
-      store.dispatch(setLimit(Number(currentLimit)));
-    }
+    setStoreValues(store, context.query as { [k: string]: string });
 
     const {
       options: { search, page, limit },
