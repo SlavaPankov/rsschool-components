@@ -2,13 +2,12 @@ import { ChangeEvent, FormEvent, useState } from 'react';
 import { useRouter } from 'next/router';
 import styles from '@/styles/searchForm.module.css';
 import { ErrorButton } from '@/components/ErrorButton';
-import { useAppDispatch } from '@/hooks/useAppDispatch';
-import { setPage, setSearchValue } from '@/store/options/options';
 
-export function SearchForm({ search }: { search: string }) {
+export function SearchForm() {
   const router = useRouter();
-  const dispatch = useAppDispatch();
-  const [value, setValue] = useState<string>(search);
+  const [value, setValue] = useState<string>(
+    (router.query.search as string) || ''
+  );
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
@@ -17,14 +16,13 @@ export function SearchForm({ search }: { search: string }) {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    dispatch(setSearchValue(value));
-    dispatch(setPage(1));
-
     if (!value) {
       delete router.query.search;
     } else {
       router.query.search = value;
     }
+
+    delete router.query.page;
 
     await router.push({ pathname: router.pathname, query: router.query });
   };

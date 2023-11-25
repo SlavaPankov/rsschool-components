@@ -3,44 +3,45 @@ import { useRouter } from 'next/router';
 import styles from '@/styles/pagination.module.css';
 
 interface IPaginationProps {
-  page: number;
-  limit: number;
   total: number;
 }
 
-export function Pagination({ page, limit, total }: IPaginationProps) {
+export function Pagination({ total }: IPaginationProps) {
   const router = useRouter();
+  const { query } = router;
+  const page = Number(query.page as string) || 1;
+  const limit = Number(query.limit as string) || 10;
 
   const handleChange = async (event: ChangeEvent<HTMLSelectElement>) => {
     if (Number(event.target.value) === 10) {
-      delete router.query.limit;
+      delete query.limit;
     } else {
-      router.query.limit = `${event.target.value}`;
+      query.limit = `${event.target.value}`;
     }
 
-    delete router.query.page;
+    delete query.page;
 
-    await router.push({ pathname: router.pathname, query: router.query });
+    await router.push({ pathname: router.pathname, query });
   };
 
   const handleNextClick = async () => {
     if (page * limit !== total) {
-      router.query.page = `${page + 1}`;
+      query.page = `${page + 1}`;
     }
 
-    await router.push({ pathname: router.pathname, query: router.query });
+    await router.push({ pathname: router.pathname, query });
   };
 
   const handlePrevClick = async () => {
     if (page > 1) {
-      router.query.page = `${page - 1}`;
+      query.page = `${page - 1}`;
     }
 
     if (page - 1 === 1) {
-      delete router.query.page;
+      delete query.page;
     }
 
-    await router.push({ pathname: router.pathname, query: router.query });
+    await router.push({ pathname: router.pathname, query });
   };
 
   return (
@@ -53,7 +54,7 @@ export function Pagination({ page, limit, total }: IPaginationProps) {
       >
         Prev
       </button>
-      <button type="button">{page}</button>
+      <button type="button">{query.page || 1}</button>
       <button
         onClick={handleNextClick}
         disabled={page * limit === total}
@@ -67,7 +68,7 @@ export function Pagination({ page, limit, total }: IPaginationProps) {
         <select
           name="limit"
           id="limit"
-          defaultValue={limit}
+          defaultValue={query.limit || 10}
           onChange={handleChange}
           data-testid="select"
         >
