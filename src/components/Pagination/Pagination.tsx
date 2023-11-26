@@ -48,7 +48,7 @@ export function Pagination({ total }: IPaginationProps) {
     <div className={styles.pagination} data-testid="pagination">
       <button
         onClick={handlePrevClick}
-        disabled={page === 1}
+        disabled={page === 1 || router.pathname.includes('detail')}
         type="button"
         name="prev"
       >
@@ -57,7 +57,7 @@ export function Pagination({ total }: IPaginationProps) {
       <button type="button">{query.page || 1}</button>
       <button
         onClick={handleNextClick}
-        disabled={page * limit === total}
+        disabled={page * limit === total || router.pathname.includes('detail')}
         type="button"
         name="next"
       >
