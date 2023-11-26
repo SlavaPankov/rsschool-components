@@ -1,6 +1,6 @@
 /* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { EOptions } from '../../types/enums/EOptions';
+import { HYDRATE } from 'next-redux-wrapper';
 
 interface IOptionsState {
   page: number;
@@ -11,16 +11,15 @@ interface IOptionsState {
 }
 
 const initialState: IOptionsState = {
-  page:
-    Number(new URLSearchParams(window.location.search).get(EOptions.page)) || 1,
-  limit: Number(localStorage.getItem(EOptions.limit)) || 10,
-  search: localStorage.getItem(EOptions.search) || '',
+  page: 1,
+  limit: 10,
+  search: '',
   isProductsLoading: false,
   isProductLoading: false,
 };
 
 export const optionsSlice = createSlice({
-  name: 'optionsSlice',
+  name: 'options',
   initialState,
   reducers: {
     setPage: (state, action: PayloadAction<number>) => {
@@ -41,6 +40,14 @@ export const optionsSlice = createSlice({
 
     setIsProductLoading: (state, action: PayloadAction<boolean>) => {
       state.isProductLoading = action.payload;
+    },
+  },
+  extraReducers: {
+    [HYDRATE]: (state, action: PayloadAction<IOptionsState>) => {
+      return {
+        ...state,
+        ...action.payload,
+      };
     },
   },
 });

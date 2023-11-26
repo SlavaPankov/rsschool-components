@@ -1,86 +1,74 @@
-import { ChangeEvent, MouseEvent, useEffect, useState } from 'react';
-import './pagination.css';
-import { useLocation, useSearchParams } from 'react-router-dom';
-import { EPaginationButtonDirection } from '../../types/enums/EPaginationButtonDirection';
-import { useAppDispatch } from '../../hooks/useAppDispatch';
-import { useAppSelector } from '../../hooks/useAppSelector';
-import { setLimit, setPage } from '../../store/options/options';
-import { useGetProductsQuery } from '../../store/products/products';
+import { ChangeEvent } from 'react';
+import { useRouter } from 'next/router';
+import styles from '@/components/Pagination/pagination.module.css';
 
-export function Pagination() {
-  const location = useLocation();
-  const [, setSearchParams] = useSearchParams();
-  const dispatch = useAppDispatch();
-  const { limit, page, search } = useAppSelector((state) => state.options);
-  const { data, isFetching } = useGetProductsQuery({ search, page, limit });
-  const [isDisabled, setIsDisabled] = useState<boolean>(false);
+interface IPaginationProps {
+  total: number;
+}
 
-  const handleChange = (event: ChangeEvent<HTMLSelectElement>) => {
-    localStorage.setItem('limit', event.target.value);
-    dispatch(setLimit(Number(event.target.value)));
-    dispatch(setPage(1));
-  };
+export function Pagination({ total }: IPaginationProps) {
+  const router = useRouter();
+  const { query } = router;
+  const page = Number(query.page as string) || 1;
+  const limit = Number(query.limit as string) || 10;
 
-  const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
-    if (
-      event.currentTarget.dataset.direction === EPaginationButtonDirection.next
-    ) {
-      if (page * limit !== data?.total) {
-        dispatch(setPage(page + 1));
-      }
-    } else if (page > 1) {
-      dispatch(setPage(page - 1));
-    }
-  };
-
-  useEffect(() => {
-    setIsDisabled(location.pathname.includes('detail'));
-  }, [location]);
-
-  useEffect(() => {
-    if (!data) {
-      return;
-    }
-
-    setIsDisabled(data.products.length < data.limit);
-  }, [data]);
-
-  useEffect(() => {
-    if (page > 1) {
-      setSearchParams({ page: `${page}` });
+  const handleChange = async (event: ChangeEvent<HTMLSelectElement>) => {
+    if (Number(event.target.value) === 10) {
+      delete query.limit;
     } else {
-      setSearchParams({});
+      query.limit = `${event.target.value}`;
     }
-  }, [page]);
+
+    delete query.page;
+
+    await router.push({ pathname: router.pathname, query });
+  };
+
+  const handleNextClick = async () => {
+    if (page * limit !== total) {
+      query.page = `${page + 1}`;
+    }
+
+    await router.push({ pathname: router.pathname, query });
+  };
+
+  const handlePrevClick = async () => {
+    if (page > 1) {
+      query.page = `${page - 1}`;
+    }
+
+    if (page - 1 === 1) {
+      delete query.page;
+    }
+
+    await router.push({ pathname: router.pathname, query });
+  };
 
   return (
-    <div className="pagination">
+    <div className={styles.pagination} data-testid="pagination">
       <button
-        disabled={isDisabled}
-        onClick={handleClick}
+        onClick={handlePrevClick}
+        disabled={page === 1 || router.pathname.includes('detail')}
         type="button"
         name="prev"
-        data-direction={EPaginationButtonDirection.prev}
       >
         Prev
       </button>
-      <button type="button">{page}</button>
+      <button type="button">{query.page || 1}</button>
       <button
-        disabled={isDisabled}
-        onClick={handleClick}
+        onClick={handleNextClick}
+        disabled={page * limit === total || router.pathname.includes('detail')}
         type="button"
         name="next"
-        data-direction={EPaginationButtonDirection.next}
       >
         Next
       </button>
-      <label className="limit" htmlFor="limit">
+      <label className={styles.limit} htmlFor="limit">
         Limit:
         <select
-          disabled={isFetching}
           name="limit"
           id="limit"
-          defaultValue={limit}
+          defaultValue={query.limit || 10}
           onChange={handleChange}
           data-testid="select"
         >

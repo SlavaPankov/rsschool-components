@@ -1,35 +1,20 @@
-import './resultsList.css';
-import { useEffect } from 'react';
+import styles from '@/components/ResultsList/resultsList.module.css';
+import { IProduct } from '@/types/interfaces/IProduct';
 import { ResultItem } from './ResultItem';
-import { Loader } from '../Loader';
-import { useGetProductsQuery } from '../../store/products/products';
-import { useAppSelector } from '../../hooks/useAppSelector';
-import { useAppDispatch } from '../../hooks/useAppDispatch';
-import { setIsProductsLoading } from '../../store/options/options';
 
-export function ResultsList() {
-  const dispatch = useAppDispatch();
-  const { search, page, limit, isProductsLoading } = useAppSelector(
-    (state) => state.options
-  );
-  const { data, isFetching } = useGetProductsQuery({ search, page, limit });
+interface IResultsListProps {
+  list: IProduct[];
+}
 
-  useEffect(() => {
-    dispatch(setIsProductsLoading(isFetching));
-  }, [isFetching]);
-
-  if (isProductsLoading) {
-    return <Loader />;
-  }
-
-  if (!data || !data.products || !data.products.length) {
-    return <div>No results</div>;
+export function ResultsList({ list }: IResultsListProps) {
+  if (!list.length) {
+    return <div data-testid="empty">No results</div>;
   }
 
   return (
     <div>
-      <ul className="list">
-        {data.products.map((product) => (
+      <ul className={styles.list}>
+        {list.map((product) => (
           <ResultItem id={product.id} title={product.title} key={product.id} />
         ))}
       </ul>

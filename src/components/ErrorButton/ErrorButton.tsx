@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import './errorButton.css';
+import styles from '@/components/ErrorButton/errorButton.module.css';
 
 export function ErrorButton() {
   const [hasError, setHasError] = useState<boolean>(false);
@@ -14,7 +14,7 @@ export function ErrorButton() {
   }, [hasError]);
 
   return (
-    <button className="error-button" type="button" onClick={handleClick}>
+    <button className={styles.errorButton} type="button" onClick={handleClick}>
       Throw Error
     </button>
   );

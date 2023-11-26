@@ -1,5 +1,7 @@
-import './resultItem.css';
-import { Link, useLocation } from 'react-router-dom';
+import Link from 'next/link';
+import styles from '@/components/ResultsList/ResultItem/resultItem.module.css';
+import { useRouter } from 'next/router';
+import { noId } from '@/utils/noId';
 
 type IResultItemProps = {
   id: number;
@@ -7,12 +9,17 @@ type IResultItemProps = {
 };
 
 export function ResultItem({ id, title }: IResultItemProps) {
-  const { search } = useLocation();
+  const router = useRouter();
 
   return (
-    <li className="item">
-      <Link to={{ pathname: `/detail/${id}`, search: `${search}` }}>
-        <h3 className="item-heading">{title}</h3>
+    <li className={styles.item}>
+      <Link
+        href={{
+          pathname: `/detail/${id}`,
+          query: noId(router.query as { [k: string]: string }),
+        }}
+      >
+        <h3 className={styles.itemHeading}>{title}</h3>
       </Link>
     </li>
   );

@@ -1,37 +1,38 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
-import './searchForm.css';
-import { useSearchParams } from 'react-router-dom';
-import { ErrorButton } from '../ErrorButton';
-import { EOptions } from '../../types/enums/EOptions';
-import { useAppSelector } from '../../hooks/useAppSelector';
-import { useAppDispatch } from '../../hooks/useAppDispatch';
-import { setPage, setSearchValue } from '../../store/options/options';
+import { useRouter } from 'next/router';
+import styles from '@/components/SearchForm/searchForm.module.css';
+import { ErrorButton } from '@/components/ErrorButton';
 
 export function SearchForm() {
-  const dispatch = useAppDispatch();
-  const { search } = useAppSelector((store) => store.options);
-  const [value, setValue] = useState<string>(search);
-  const [, setSearchParams] = useSearchParams();
+  const router = useRouter();
+  const [value, setValue] = useState<string>(
+    (router.query.search as string) || ''
+  );
 
   const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setValue(event.target.value);
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
-    localStorage.setItem(EOptions.search, value);
+    if (!value) {
+      delete router.query.search;
+    } else {
+      router.query.search = value;
+    }
 
-    dispatch(setSearchValue(value));
-    dispatch(setPage(1));
-    setSearchParams({});
+    delete router.query.page;
+
+    await router.push({ pathname: router.pathname, query: router.query });
   };
 
   return (
-    <form className="form" onSubmit={handleSubmit}>
-      <label className="label" htmlFor="search">
+    <form className={styles.form} onSubmit={handleSubmit}>
+      <label className={styles.label} htmlFor="search">
+        <span className={styles.span}>Search:</span>
         <input
-          className="input"
+          className={styles.input}
           type="text"
           id="search"
           name="search"

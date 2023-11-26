@@ -1,6 +1,7 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { IResponse } from '../../types/interfaces/IResponse';
-import { IProduct } from '../../types/interfaces/IProduct';
+import { HYDRATE } from 'next-redux-wrapper';
+import { IResponse } from '@/types/interfaces/IResponse';
+import { IProduct } from '@/types/interfaces/IProduct';
 
 interface IRequest {
   search: string;
@@ -10,6 +11,12 @@ interface IRequest {
 
 export const productsApi = createApi({
   baseQuery: fetchBaseQuery({ baseUrl: 'https://dummyjson.com/products' }),
+  // eslint-disable-next-line consistent-return
+  extractRehydrationInfo(action, { reducerPath }) {
+    if (action.type === HYDRATE) {
+      return action.payload[reducerPath];
+    }
+  },
   endpoints: (builder) => ({
     getProducts: builder.query<IResponse, IRequest>({
       query: ({ search, page = 1, limit = 10 }) =>
@@ -22,3 +29,6 @@ export const productsApi = createApi({
 });
 
 export const { useGetProductsQuery, useGetProductQuery } = productsApi;
+export const {
+  util: { getRunningQueriesThunk },
+} = productsApi;
