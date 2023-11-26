@@ -1,6 +1,6 @@
 import { ChangeEvent, FormEvent, useState } from 'react';
 import { useRouter } from 'next/router';
-import styles from '@/styles/searchForm.module.css';
+import styles from '@/components/SearchForm/searchForm.module.css';
 import { ErrorButton } from '@/components/ErrorButton';
 
 export function SearchForm() {

@@ -22,7 +22,7 @@ export function Layout({ data, children }: ILayoutProps) {
         <SearchForm />
         <div className="content">
           <div className="paginationContainer">
-            <ResultsList list={data} />
+            <ResultsList list={data.products} />
             {data.products.length < data.total && (
               <Pagination total={data.total} />
             )}

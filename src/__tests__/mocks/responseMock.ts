@@ -1,8 +1,8 @@
-import { IResponse } from '../../types/interfaces/IResponse';
+import { IResponse } from '@/types/interfaces/IResponse';
 import { productMock } from './productMock';
 
 export const responseMock: IResponse = {
-  total: 0,
+  total: 100,
   skip: 0,
   limit: 0,
   products: Array(3)

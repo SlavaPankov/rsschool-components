@@ -3,33 +3,51 @@ import { getRunningQueriesThunk, productsApi } from '@/store/products/products';
 import { IResponse } from '@/types/interfaces/IResponse';
 import { Layout } from '@/components/Layout';
 import { getSearchValue } from '@/utils/getSearchValue';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 
-interface IHomeProps {
-  data: IResponse;
-}
-
-export default function Home({ data }: IHomeProps) {
+export default function Home({
+  data,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   return <Layout data={data} />;
 }
 
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) => async (context) => {
-    const { search, page, limit } = context.query;
+    try {
+      const { search, page, limit } = context.query;
 
-    const { data } = await store.dispatch(
-      productsApi.endpoints?.getProducts.initiate({
-        search: getSearchValue(search, ''),
-        page: Number(getSearchValue(page, String(1))),
-        limit: Number(getSearchValue(limit, String(10))),
-      })
-    );
+      const { data } = await store.dispatch(
+        productsApi.endpoints?.getProducts.initiate({
+          search: getSearchValue(search, ''),
+          page: Number(getSearchValue(page, String(1))),
+          limit: Number(getSearchValue(limit, String(10))),
+        })
+      );
 
-    await Promise.all(store.dispatch(getRunningQueriesThunk()));
+      if (!data) {
+        throw new Error('no data');
+      }
 
-    return {
-      props: {
-        data,
-      },
-    };
+      await Promise.all(store.dispatch(getRunningQueriesThunk()));
+
+      return {
+        props: {
+          data,
+        },
+      };
+    } catch {
+      return {
+        props: {
+          data: {
+            products: [],
+            total: 0,
+            skip: 0,
+            limit: 0,
+          },
+        },
+      };
+    }
   }
-);
+) satisfies GetServerSideProps<{
+  data: IResponse;
+}>;

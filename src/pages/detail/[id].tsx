@@ -9,13 +9,12 @@ import { noId } from '@/utils/noId';
 import { Layout } from '@/components/Layout';
 import { getSearchValue } from '@/utils/getSearchValue';
 import { useEffect, useRef } from 'react';
+import { GetServerSideProps, InferGetServerSidePropsType } from 'next';
 
-interface IDetailPageProps {
-  product: IProduct;
-  data: IResponse;
-}
-
-export default function DetailPage({ product, data }: IDetailPageProps) {
+export default function DetailPage({
+  product,
+  data,
+}: InferGetServerSidePropsType<typeof getServerSideProps>) {
   const router = useRouter();
   const ref = useRef<HTMLDivElement>(null);
 
@@ -62,28 +61,58 @@ export default function DetailPage({ product, data }: IDetailPageProps) {
 
 export const getServerSideProps = wrapper.getServerSideProps(
   (store) => async (context) => {
-    const { params } = context;
-    const { search, page, limit } = context.query;
+    try {
+      const { params } = context;
+      const { search, page, limit } = context.query;
 
-    const { data } = await store.dispatch(
-      productsApi.endpoints?.getProducts.initiate({
-        search: getSearchValue(search, ''),
-        page: Number(getSearchValue(page, String(1))),
-        limit: Number(getSearchValue(limit, String(10))),
-      })
-    );
+      const { data } = await store.dispatch(
+        productsApi.endpoints?.getProducts.initiate({
+          search: getSearchValue(search, ''),
+          page: Number(getSearchValue(page, String(1))),
+          limit: Number(getSearchValue(limit, String(10))),
+        })
+      );
 
-    const { data: product } = await store.dispatch(
-      productsApi.endpoints?.getProduct.initiate(Number(params?.id))
-    );
+      const { data: product } = await store.dispatch(
+        productsApi.endpoints?.getProduct.initiate(Number(params?.id))
+      );
 
-    await Promise.all(store.dispatch(getRunningQueriesThunk()));
+      await Promise.all(store.dispatch(getRunningQueriesThunk()));
 
-    return {
-      props: {
-        data,
-        product,
-      },
-    };
+      if (!product || !data) {
+        throw new Error('failed to fetch data');
+      }
+
+      return {
+        props: {
+          data,
+          product,
+        },
+      };
+    } catch {
+      return {
+        props: {
+          data: {
+            products: [],
+            total: 0,
+            skip: 0,
+            limit: 0,
+          },
+          product: {
+            id: 0,
+            title: '',
+            description: '',
+            price: 0,
+            discountPercentage: 0,
+            rating: 0,
+            stock: 0,
+            brand: '',
+            category: '',
+            thumbnail: '',
+            images: [],
+          },
+        },
+      };
+    }
   }
-);
+) satisfies GetServerSideProps<{ data: IResponse; product: IProduct }>;

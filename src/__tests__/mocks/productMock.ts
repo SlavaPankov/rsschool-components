@@ -1,4 +1,4 @@
-import { IProduct } from '../../types/interfaces/IProduct';
+import { IProduct } from '@/types/interfaces/IProduct';
 
 export const productMock: IProduct = {
   id: 1,
@@ -10,6 +10,6 @@ export const productMock: IProduct = {
   stock: 11,
   brand: 'test brand',
   category: 'category',
-  thumbnail: './src/image.png',
+  thumbnail: '/src/image.png',
   images: [],
 };

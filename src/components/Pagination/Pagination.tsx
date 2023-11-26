@@ -1,6 +1,6 @@
 import { ChangeEvent } from 'react';
 import { useRouter } from 'next/router';
-import styles from '@/styles/pagination.module.css';
+import styles from '@/components/Pagination/pagination.module.css';
 
 interface IPaginationProps {
   total: number;
@@ -45,7 +45,7 @@ export function Pagination({ total }: IPaginationProps) {
   };
 
   return (
-    <div className={styles.pagination}>
+    <div className={styles.pagination} data-testid="pagination">
       <button
         onClick={handlePrevClick}
         disabled={page === 1}

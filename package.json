@@ -8,7 +8,7 @@
     "start": "next start",
     "build": "tsc && vite build",
     "test": "vitest run",
-    "test:coverage": "vitest run --coverage",
+    "test:coverage": "vitest --coverage",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "format:fix": "prettier --write ./src --config ./.prettierrc"
@@ -51,6 +51,8 @@
     "husky": "^8.0.3",
     "lint-staged": "^15.0.2",
     "msw": "^2.0.5",
+    "next-router-mock": "^0.9.10",
+    "node-mocks-http": "^1.13.0",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2",
     "vite": "^4.4.5",

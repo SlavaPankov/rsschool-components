@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import styles from '@/styles/resultItem.module.css';
+import styles from '@/components/ResultsList/ResultItem/resultItem.module.css';
 import { useRouter } from 'next/router';
 import { noId } from '@/utils/noId';
 

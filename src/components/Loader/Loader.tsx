@@ -1,4 +1,4 @@
-import styles from '@/styles/loader.module.css';
+import styles from '@/components/Loader/loader.module.css';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 

@@ -1,4 +1,4 @@
-/* eslint-disable no-param-reassign,consistent-return */
+/* eslint-disable no-param-reassign */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { HYDRATE } from 'next-redux-wrapper';
 

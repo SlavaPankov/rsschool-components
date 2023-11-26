@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { http, HttpResponse } from 'msw';
 import { productMock } from './productMock';
 import { responseMock } from './responseMock';

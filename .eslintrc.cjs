@@ -14,7 +14,7 @@ module.exports = {
   ],
   "overrides": [],
   "parser": "@typescript-eslint/parser",
-  "ignorePatterns": [".eslintrc.cjs", "vite.config.ts", "next.config.js"],
+  "ignorePatterns": [".eslintrc.cjs", "vitest.config.ts", "next.config.js"],
   "parserOptions": {
     "ecmaVersion": "latest",
     "sourceType": "module",
