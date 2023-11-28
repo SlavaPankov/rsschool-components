@@ -1,14 +1,19 @@
-import { SearchForm } from '../../components/SearchForm';
+import { NavLink } from 'react-router-dom';
 import { Heading } from '../../components/Heading';
 import './mainPage.css';
-import { Content } from '../../components/Content';
 
 export function MainPage() {
   return (
     <>
       <Heading />
-      <SearchForm />
-      <Content />
+      <ul>
+        <li>
+          <NavLink to="/uncontrolled">Uncontrolled form</NavLink>
+        </li>
+        <li>
+          <NavLink to="/react-hook-form">React hook form</NavLink>
+        </li>
+      </ul>
     </>
   );
 }
