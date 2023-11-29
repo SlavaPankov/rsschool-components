@@ -1,0 +1,18 @@
+export enum EErrorMessages {
+  requireName = 'Name is required',
+  capitalizeError = 'Name should be capitalized',
+  invalidFormat = 'Invalid format',
+  requireAge = 'Age is required',
+  positiveError = 'Age must be a positive number',
+  requireEmail = 'Email is required',
+  requirePassword = 'Password is required',
+  requireConfirmPassword = 'Confirmed password is required',
+  matchError = 'Password must match',
+  passwordLengthError = 'Password must be at least 8 characters',
+  strengthError = 'Password must contain: 1 number, 1 uppercased letter, 1 lowercased letter, 1 special character',
+  requireGender = 'Gender is required',
+  requireAccept = 'Accept is required',
+  requireImage = 'Image is required',
+  invalidExtension = 'Image must be .png or .jpeg or .jpg',
+  invalidSize = 'Image size must be less then 1Mb',
+}

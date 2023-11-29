@@ -1,8 +1,111 @@
-import { FormEvent, useRef } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
+import {
+  number,
+  object,
+  ObjectSchema,
+  ref,
+  string,
+  ValidationError,
+} from 'yup';
 import styles from './uncontrolledForm.module.css';
 import { EFormFieldNames } from '../../types/enums/EFormFieldNames';
+import { EErrorMessages } from '../../types/enums/EErrorMessages';
+import { getPasswordStrength } from '../../utils/getPasswordStrength';
+import { getStrengthColor } from '../../utils/getStrengthColor';
+
+interface IFormData {
+  name: string;
+  age: number;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  gender: 'male' | 'female';
+  accept: string;
+  image: string;
+}
+
+const schema: ObjectSchema<IFormData> = object({
+  name: string()
+    .required(EErrorMessages.requireName)
+    .test({
+      test(value, ctx) {
+        if (!value) {
+          return ctx.createError({ message: EErrorMessages.requireName });
+        }
+
+        if ([...value][0] !== [...value][0].toUpperCase()) {
+          return ctx.createError({ message: EErrorMessages.capitalizeError });
+        }
+
+        return true;
+      },
+    }),
+  age: number()
+    .required(EErrorMessages.requireAge)
+    .test({
+      test(value, ctx) {
+        if (value === 0) {
+          return ctx.createError({ message: EErrorMessages.requireAge });
+        }
+
+        if (value < 0) {
+          return ctx.createError({ message: EErrorMessages.positiveError });
+        }
+
+        return true;
+      },
+    }),
+  email: string()
+    .email(EErrorMessages.invalidFormat)
+    .required(EErrorMessages.requireEmail),
+  password: string()
+    .required(EErrorMessages.requirePassword)
+    .min(8, EErrorMessages.passwordLengthError)
+    .test({
+      test(value, ctx) {
+        if (
+          !/^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*()-_=+{};:,<.>]).{4,}$/.test(
+            value
+          )
+        ) {
+          return ctx.createError({ message: EErrorMessages.strengthError });
+        }
+
+        return true;
+      },
+    }),
+  confirmPassword: string()
+    .oneOf([ref('password')], EErrorMessages.matchError)
+    .required(EErrorMessages.requireConfirmPassword),
+  gender: string<'male' | 'female'>().required(EErrorMessages.requireGender),
+  accept: string().required(EErrorMessages.requireAccept),
+  image: string()
+    .required(EErrorMessages.requireImage)
+    .test({
+      test(value, ctx) {
+        if (!value.split(',')[1]) {
+          return ctx.createError({ message: EErrorMessages.requireImage });
+        }
+
+        const extension = value.split(';')[0].split(':')[1].split('/')[1];
+
+        if (atob(value.split(',')[1]).length / 1024 / 1024 > 1) {
+          return ctx.createError({ message: EErrorMessages.invalidSize });
+        }
+
+        if (extension === 'png' || extension === 'jpeg') {
+          return true;
+        }
+
+        return ctx.createError({ message: EErrorMessages.invalidExtension });
+      },
+    }),
+});
 
 export function UncontrolledForm() {
+  const [strength, setStrength] = useState(getPasswordStrength(''));
+  const [errors, setErrors] = useState<{ [k: string]: string }>({});
+  const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const imageRef = useRef<HTMLInputElement>(null);
   const toBase64 = async (file: File | undefined) => {
     if (!file) {
@@ -20,96 +123,161 @@ export function UncontrolledForm() {
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
     const { target } = event;
-    const { current } = imageRef;
-    let base64File: string = '';
-
-    if (!current) {
-      return;
-    }
-
-    if (current.files) {
-      base64File = await toBase64(current.files[0]);
-    }
 
     const formData = Object.fromEntries(
       new FormData(target as HTMLFormElement)
     );
+    const base64File = await toBase64(formData[EFormFieldNames.image] as File);
+
+    console.log(formData[EFormFieldNames.image] as File);
 
     const convertedData: { [k: string]: string } = {
       ...formData,
       [EFormFieldNames.image]: base64File,
+      [EFormFieldNames.age]: (formData[EFormFieldNames.age] as string) || '0',
     };
 
-    console.log(convertedData);
+    schema
+      .validate(convertedData, { abortEarly: false })
+      .then(() => setIsDisabled(false))
+      .catch((validationErrors: ValidationError) => {
+        const newErrors: Record<string, string> = {};
+        validationErrors.inner.forEach((error) => {
+          if (error.path) {
+            newErrors[error.path] = error.message;
+          }
+        });
+        setErrors(newErrors);
+      });
   };
+
+  const handlePasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setStrength(getPasswordStrength(event.target.value));
+  };
+
+  useEffect(() => {
+    console.log(errors);
+  }, [errors]);
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
-      <label htmlFor="name">
+      <label className={styles.label} htmlFor="name">
         <span>Name:</span>
         <input
+          className={styles.input}
           type="text"
           name={EFormFieldNames.name}
           id="name"
           placeholder="Name..."
         />
+        {errors[EFormFieldNames.name] && (
+          <span>{errors[EFormFieldNames.name]}</span>
+        )}
       </label>
-      <label htmlFor="age">
+      <label className={styles.label} htmlFor="age">
         <span>Age:</span>
         <input
+          className={styles.input}
           type="number"
           name={EFormFieldNames.age}
           id="age"
           placeholder="22"
         />
+        {errors[EFormFieldNames.age] && (
+          <span>{errors[EFormFieldNames.age]}</span>
+        )}
       </label>
-      <label htmlFor="email">
+      <label className={styles.label} htmlFor="email">
         <span>Email:</span>
         <input
-          type="email"
+          className={styles.input}
+          type="text"
           name={EFormFieldNames.email}
           id="email"
           placeholder="email@example.com"
         />
+        {errors[EFormFieldNames.email] && (
+          <span>{errors[EFormFieldNames.email]}</span>
+        )}
       </label>
-      <label htmlFor="password">
+      <label className={styles.label} htmlFor="password">
         <span>Password:</span>
         <input
+          className={styles.input}
           type="password"
           name={EFormFieldNames.password}
           id="password"
           placeholder="Passowrd..."
+          onChange={handlePasswordChange}
         />
+        {errors[EFormFieldNames.password] && (
+          <span>{errors[EFormFieldNames.password]}</span>
+        )}
       </label>
-      <label htmlFor="confirmPassword">
+      <div>
+        <div>Password Strength: {strength.toFixed(2)}%</div>
+        <div
+          style={{
+            width: '100%',
+            height: '10px',
+            backgroundColor: 'lightgray',
+            marginTop: '5px',
+          }}
+        >
+          <div
+            style={{
+              width: `${strength}%`,
+              height: '100%',
+              backgroundColor: getStrengthColor(strength),
+            }}
+          />
+        </div>
+      </div>
+      <label className={styles.label} htmlFor="confirmPassword">
         <span>Confirm password:</span>
         <input
+          className={styles.input}
           type="password"
           name={EFormFieldNames.confirmPassword}
           id="confirmPassword"
           placeholder="Passowrd..."
         />
+        {errors[EFormFieldNames.confirmPassword] && (
+          <span>{errors[EFormFieldNames.confirmPassword]}</span>
+        )}
       </label>
-      <div>
-        <span>Gender</span>
-        <label htmlFor="gender_female">
-          <span>Female:</span>
+      <div className={styles.gender}>
+        <span>Gender: </span>
+        <label className={styles.label} htmlFor="gender_female">
           <input
+            className={styles.radio}
             type="radio"
             name={EFormFieldNames.gender}
             id="gender_female"
           />
+          <span> :Female</span>
         </label>
-        <label htmlFor="gender_male">
-          <span>Male:</span>
-          <input type="radio" name={EFormFieldNames.gender} id="gender_male" />
+        <label className={styles.label} htmlFor="gender_male">
+          <input
+            className={styles.radio}
+            type="radio"
+            name={EFormFieldNames.gender}
+            id="gender_male"
+          />
+          <span> :Male</span>
         </label>
+        {errors[EFormFieldNames.gender] && (
+          <span>{errors[EFormFieldNames.gender]}</span>
+        )}
       </div>
       <label htmlFor="accept">
         <span>Accept T&C:</span>
         <input type="checkbox" name={EFormFieldNames.accept} id="accept" />
+        {errors[EFormFieldNames.accept] && (
+          <span>{errors[EFormFieldNames.accept]}</span>
+        )}
       </label>
-      <label htmlFor="image">
+      <label className={styles.label} htmlFor="image">
         <span>Upload image:</span>
         <input
           type="file"
@@ -117,8 +285,13 @@ export function UncontrolledForm() {
           name={EFormFieldNames.image}
           id="image"
         />
+        {errors[EFormFieldNames.image] && (
+          <span>{errors[EFormFieldNames.image]}</span>
+        )}
       </label>
-      <button type="submit">Send</button>
+      <button type="submit" disabled={!isDisabled}>
+        Send
+      </button>
     </form>
   );
 }
