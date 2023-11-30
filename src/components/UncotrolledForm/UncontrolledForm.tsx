@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
+import { ChangeEvent, FormEvent, useRef, useState } from 'react';
 import {
   number,
   object,
@@ -7,6 +7,7 @@ import {
   string,
   ValidationError,
 } from 'yup';
+import { useNavigate } from 'react-router-dom';
 import styles from './uncontrolledForm.module.css';
 import { EFormFieldNames } from '../../types/enums/EFormFieldNames';
 import { EErrorMessages } from '../../types/enums/EErrorMessages';
@@ -14,18 +15,9 @@ import { getPasswordStrength } from '../../utils/getPasswordStrength';
 import { getStrengthColor } from '../../utils/getStrengthColor';
 import { AutocompleteSelect } from '../AutocompleteSelect';
 import { useAppSelector } from '../../hooks/useAppSelector';
-
-interface IFormData {
-  name: string;
-  age: number;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  gender: 'male' | 'female';
-  accept: string;
-  image: string;
-  country: string;
-}
+import { IFormData } from '../../types/interfaces/IFormData';
+import { useAppDispatch } from '../../hooks/useAppDispatch';
+import { appendData } from '../../store/formData/formData';
 
 const schema: ObjectSchema<IFormData> = object({
   name: string()
@@ -111,10 +103,11 @@ const schema: ObjectSchema<IFormData> = object({
 });
 
 export function UncontrolledForm() {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
   const { countries } = useAppSelector((state) => state.countries);
   const [strength, setStrength] = useState(getPasswordStrength(''));
   const [errors, setErrors] = useState<{ [k: string]: string }>({});
-  const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const imageRef = useRef<HTMLInputElement>(null);
   const toBase64 = async (file: File | undefined) => {
     if (!file) {
@@ -146,7 +139,10 @@ export function UncontrolledForm() {
 
     schema
       .validate(convertedData, { abortEarly: false })
-      .then(() => setIsDisabled(false))
+      .then((data) => {
+        dispatch(appendData(data));
+        navigate('/');
+      })
       .catch((validationErrors: ValidationError) => {
         const newErrors: Record<string, string> = {};
         validationErrors.inner.forEach((error) => {
@@ -161,10 +157,6 @@ export function UncontrolledForm() {
   const handlePasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
     setStrength(getPasswordStrength(event.target.value));
   };
-
-  useEffect(() => {
-    console.log(errors);
-  }, [errors]);
 
   return (
     <form className={styles.form} onSubmit={handleSubmit}>
@@ -305,9 +297,7 @@ export function UncontrolledForm() {
         list={countries}
         error={errors[EFormFieldNames.country]}
       />
-      <button type="submit" disabled={!isDisabled}>
-        Send
-      </button>
+      <button type="submit">Send</button>
     </form>
   );
 }

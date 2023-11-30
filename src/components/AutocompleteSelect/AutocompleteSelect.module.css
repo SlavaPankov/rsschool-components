@@ -1,71 +1,71 @@
 .container {
-    position: relative;
-    width: 100%;
-    max-width: 33%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  position: relative;
+  width: 100%;
+  max-width: 33%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .label {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .input {
-    padding: 5px 10px;
-    font-size: 16px;
-    line-height: 130%;
+  padding: 5px 10px;
+  font-size: 16px;
+  line-height: 130%;
 }
 
 .listContainer {
-    position: relative;
+  position: relative;
 }
 
 .list {
-    position: absolute;
-    left: 0;
-    top: 100%;
-    width: 100%;
-    margin: 0;
-    padding: 10px 0;
-    list-style: none;
-    background-color: white;
-    border: 1px solid black;
+  position: absolute;
+  left: 0;
+  top: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 10px 0;
+  list-style: none;
+  background-color: white;
+  border: 1px solid black;
 }
 
 .item {
-    padding: 5px 10px;
+  padding: 5px 10px;
 }
 
 .noResult {
-    position: absolute;
-    top: 100%;
-    left: 0;
-    padding: 10px;
-    text-align: center;
-    background-color: white;
-    border: 1px solid black;
-    width: 100%;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  padding: 10px;
+  text-align: center;
+  background-color: white;
+  border: 1px solid black;
+  width: 100%;
 }
 
 .button {
-    padding: 0;
-    background-color: transparent;
-    border: none;
-    border-radius: 0;
-    cursor: pointer;
+  padding: 0;
+  background-color: transparent;
+  border: none;
+  border-radius: 0;
+  cursor: pointer;
 }
 
 .error {
-    position: absolute;
-    top: 50%;
-    left: calc(100% + 15px);
-    transform: translateY(-50%);
-    font-size: 12px;
-    line-height: 100%;
-    color: red;
-    width: 100%;
+  position: absolute;
+  top: 50%;
+  left: calc(100% + 15px);
+  transform: translateY(-50%);
+  font-size: 12px;
+  line-height: 100%;
+  color: red;
+  width: 100%;
 }
