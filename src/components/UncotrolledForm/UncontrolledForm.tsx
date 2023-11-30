@@ -63,6 +63,10 @@ const schema: ObjectSchema<IFormData> = object({
     .min(8, EErrorMessages.passwordLengthError)
     .test({
       test(value, ctx) {
+        if (!value) {
+          return ctx.createError({ message: EErrorMessages.requirePassword });
+        }
+
         if (
           !/^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*()-_=+{};:,<.>]).{4,}$/.test(
             value
@@ -129,8 +133,6 @@ export function UncontrolledForm() {
     );
     const base64File = await toBase64(formData[EFormFieldNames.image] as File);
 
-    console.log(formData[EFormFieldNames.image] as File);
-
     const convertedData: { [k: string]: string } = {
       ...formData,
       [EFormFieldNames.image]: base64File,
@@ -171,7 +173,7 @@ export function UncontrolledForm() {
           placeholder="Name..."
         />
         {errors[EFormFieldNames.name] && (
-          <span>{errors[EFormFieldNames.name]}</span>
+          <span className={styles.error}>{errors[EFormFieldNames.name]}</span>
         )}
       </label>
       <label className={styles.label} htmlFor="age">
@@ -184,7 +186,7 @@ export function UncontrolledForm() {
           placeholder="22"
         />
         {errors[EFormFieldNames.age] && (
-          <span>{errors[EFormFieldNames.age]}</span>
+          <span className={styles.error}>{errors[EFormFieldNames.age]}</span>
         )}
       </label>
       <label className={styles.label} htmlFor="email">
@@ -197,7 +199,7 @@ export function UncontrolledForm() {
           placeholder="email@example.com"
         />
         {errors[EFormFieldNames.email] && (
-          <span>{errors[EFormFieldNames.email]}</span>
+          <span className={styles.error}>{errors[EFormFieldNames.email]}</span>
         )}
       </label>
       <label className={styles.label} htmlFor="password">
@@ -211,7 +213,9 @@ export function UncontrolledForm() {
           onChange={handlePasswordChange}
         />
         {errors[EFormFieldNames.password] && (
-          <span>{errors[EFormFieldNames.password]}</span>
+          <span className={styles.error}>
+            {errors[EFormFieldNames.password]}
+          </span>
         )}
       </label>
       <div>
@@ -243,7 +247,9 @@ export function UncontrolledForm() {
           placeholder="Passowrd..."
         />
         {errors[EFormFieldNames.confirmPassword] && (
-          <span>{errors[EFormFieldNames.confirmPassword]}</span>
+          <span className={styles.error}>
+            {errors[EFormFieldNames.confirmPassword]}
+          </span>
         )}
       </label>
       <div className={styles.gender}>
@@ -267,14 +273,14 @@ export function UncontrolledForm() {
           <span> :Male</span>
         </label>
         {errors[EFormFieldNames.gender] && (
-          <span>{errors[EFormFieldNames.gender]}</span>
+          <span className={styles.error}>{errors[EFormFieldNames.gender]}</span>
         )}
       </div>
-      <label htmlFor="accept">
+      <label className={styles.accept} htmlFor="accept">
         <span>Accept T&C:</span>
         <input type="checkbox" name={EFormFieldNames.accept} id="accept" />
         {errors[EFormFieldNames.accept] && (
-          <span>{errors[EFormFieldNames.accept]}</span>
+          <span className={styles.error}>{errors[EFormFieldNames.accept]}</span>
         )}
       </label>
       <label className={styles.label} htmlFor="image">
@@ -286,7 +292,7 @@ export function UncontrolledForm() {
           id="image"
         />
         {errors[EFormFieldNames.image] && (
-          <span>{errors[EFormFieldNames.image]}</span>
+          <span className={styles.error}>{errors[EFormFieldNames.image]}</span>
         )}
       </label>
       <button type="submit" disabled={!isDisabled}>
