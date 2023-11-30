@@ -12,6 +12,8 @@ import { EFormFieldNames } from '../../types/enums/EFormFieldNames';
 import { EErrorMessages } from '../../types/enums/EErrorMessages';
 import { getPasswordStrength } from '../../utils/getPasswordStrength';
 import { getStrengthColor } from '../../utils/getStrengthColor';
+import { AutocompleteSelect } from '../AutocompleteSelect';
+import { useAppSelector } from '../../hooks/useAppSelector';
 
 interface IFormData {
   name: string;
@@ -22,6 +24,7 @@ interface IFormData {
   gender: 'male' | 'female';
   accept: string;
   image: string;
+  country: string;
 }
 
 const schema: ObjectSchema<IFormData> = object({
@@ -104,9 +107,11 @@ const schema: ObjectSchema<IFormData> = object({
         return ctx.createError({ message: EErrorMessages.invalidExtension });
       },
     }),
+  country: string().required(EErrorMessages.requiredCountry),
 });
 
 export function UncontrolledForm() {
+  const { countries } = useAppSelector((state) => state.countries);
   const [strength, setStrength] = useState(getPasswordStrength(''));
   const [errors, setErrors] = useState<{ [k: string]: string }>({});
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
@@ -295,6 +300,11 @@ export function UncontrolledForm() {
           <span className={styles.error}>{errors[EFormFieldNames.image]}</span>
         )}
       </label>
+      <AutocompleteSelect
+        label="Country:"
+        list={countries}
+        error={errors[EFormFieldNames.country]}
+      />
       <button type="submit" disabled={!isDisabled}>
         Send
       </button>

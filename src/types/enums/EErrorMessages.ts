@@ -15,4 +15,5 @@ export enum EErrorMessages {
   requireImage = 'Image is required',
   invalidExtension = 'Image must be .png or .jpeg or .jpg',
   invalidSize = 'Image size must be less then 1Mb',
+  requiredCountry = 'Country is required',
 }

@@ -7,4 +7,5 @@ export enum EFormFieldNames {
   gender = 'gender',
   accept = 'accept',
   image = 'image',
+  country = 'country',
 }
