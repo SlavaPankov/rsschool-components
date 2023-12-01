@@ -257,6 +257,7 @@ export function UncontrolledForm() {
             type="radio"
             name={EFormFieldNames.gender}
             id="gender_female"
+            value="female"
           />
           <span> :Female</span>
         </label>
@@ -266,6 +267,7 @@ export function UncontrolledForm() {
             type="radio"
             name={EFormFieldNames.gender}
             id="gender_male"
+            value="male"
           />
           <span> :Male</span>
         </label>
