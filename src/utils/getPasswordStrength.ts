@@ -12,5 +12,5 @@ export const getPasswordStrength = (password: string): number => {
     (hasSpecialChar ? 1 : 0) +
     (hasMinLength ? 1 : 0);
 
-  return (strength / 5) * 100; // Calculate percentage of fulfilled conditions
+  return (strength / 5) * 100;
 };

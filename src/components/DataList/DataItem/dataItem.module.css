@@ -1,19 +1,19 @@
 .item {
-    padding: 10px;
-    border: 1px solid black;
-    border-radius: 5px;
+  padding: 10px;
+  border: 1px solid black;
+  border-radius: 5px;
 }
 
 .data {
-    font-size: 16px;
-    line-height: 130%;
-    font-weight: 400;
+  font-size: 16px;
+  line-height: 130%;
+  font-weight: 400;
 }
 
 .value {
-    font-weight: 700;
+  font-weight: 700;
 }
 
 .image {
-    max-width: 100%;
+  max-width: 100%;
 }

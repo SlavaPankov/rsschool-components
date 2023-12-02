@@ -1,106 +1,16 @@
 import { ChangeEvent, FormEvent, useRef, useState } from 'react';
-import {
-  number,
-  object,
-  ObjectSchema,
-  ref,
-  string,
-  ValidationError,
-} from 'yup';
+import { ValidationError } from 'yup';
 import { useNavigate } from 'react-router-dom';
 import styles from './uncontrolledForm.module.css';
 import { EFormFieldNames } from '../../types/enums/EFormFieldNames';
-import { EErrorMessages } from '../../types/enums/EErrorMessages';
 import { getPasswordStrength } from '../../utils/getPasswordStrength';
 import { getStrengthColor } from '../../utils/getStrengthColor';
 import { AutocompleteSelect } from '../AutocompleteSelect';
 import { useAppSelector } from '../../hooks/useAppSelector';
-import { IFormData } from '../../types/interfaces/IFormData';
 import { useAppDispatch } from '../../hooks/useAppDispatch';
 import { appendData } from '../../store/formData/formData';
-
-const schema: ObjectSchema<IFormData> = object({
-  name: string()
-    .required(EErrorMessages.requireName)
-    .test({
-      test(value, ctx) {
-        if (!value) {
-          return ctx.createError({ message: EErrorMessages.requireName });
-        }
-
-        if ([...value][0] !== [...value][0].toUpperCase()) {
-          return ctx.createError({ message: EErrorMessages.capitalizeError });
-        }
-
-        return true;
-      },
-    }),
-  age: number()
-    .required(EErrorMessages.requireAge)
-    .test({
-      test(value, ctx) {
-        if (value === 0) {
-          return ctx.createError({ message: EErrorMessages.requireAge });
-        }
-
-        if (value < 0) {
-          return ctx.createError({ message: EErrorMessages.positiveError });
-        }
-
-        return true;
-      },
-    }),
-  email: string()
-    .email(EErrorMessages.invalidFormat)
-    .required(EErrorMessages.requireEmail),
-  password: string()
-    .required(EErrorMessages.requirePassword)
-    .min(8, EErrorMessages.passwordLengthError)
-    .test({
-      test(value, ctx) {
-        if (!value) {
-          return ctx.createError({ message: EErrorMessages.requirePassword });
-        }
-
-        if (
-          !/^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*()-_=+{};:,<.>]).{4,}$/.test(
-            value
-          )
-        ) {
-          return ctx.createError({ message: EErrorMessages.strengthError });
-        }
-
-        return true;
-      },
-    }),
-  confirmPassword: string()
-    .oneOf([ref('password')], EErrorMessages.matchError)
-    .required(EErrorMessages.requireConfirmPassword),
-  gender: string<'male' | 'female'>().required(EErrorMessages.requireGender),
-  accept: string().required(EErrorMessages.requireAccept),
-  image: string()
-    .required(EErrorMessages.requireImage)
-    .test({
-      test(value, ctx) {
-        if (!value.split(',')[1]) {
-          return ctx.createError({ message: EErrorMessages.requireImage });
-        }
-
-        const extension = value.split(';')[0].split(':')[1].split('/')[1];
-
-        if (atob(value.split(',')[1]).length / 1024 / 1024 > 1) {
-          return ctx.createError({ message: EErrorMessages.invalidSize });
-        }
-
-        if (extension === 'png' || extension === 'jpeg') {
-          return true;
-        }
-
-        return ctx.createError({ message: EErrorMessages.invalidExtension });
-      },
-    }),
-  country: string().required(EErrorMessages.requiredCountry),
-});
+import { schema } from '../../utils/schema';
+import { toBase64 } from '../../utils/toBase64';
 
 export function UncontrolledForm() {
   const dispatch = useAppDispatch();
@@ -109,18 +19,6 @@ export function UncontrolledForm() {
   const [strength, setStrength] = useState(getPasswordStrength(''));
   const [errors, setErrors] = useState<{ [k: string]: string }>({});
   const imageRef = useRef<HTMLInputElement>(null);
-  const toBase64 = async (file: File | undefined) => {
-    if (!file) {
-      throw new Error('no file');
-    }
-
-    return new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = reject;
-    });
-  };
 
   const handleSubmit = async (event: FormEvent) => {
     event.preventDefault();
@@ -129,18 +27,18 @@ export function UncontrolledForm() {
     const formData = Object.fromEntries(
       new FormData(target as HTMLFormElement)
     );
+
     const base64File = await toBase64(formData[EFormFieldNames.image] as File);
 
     const convertedData: { [k: string]: string } = {
       ...formData,
-      [EFormFieldNames.image]: base64File,
       [EFormFieldNames.age]: (formData[EFormFieldNames.age] as string) || '0',
     };
 
     schema
       .validate(convertedData, { abortEarly: false })
       .then((data) => {
-        dispatch(appendData(data));
+        dispatch(appendData({ ...data, image: base64File }));
         navigate('/');
       })
       .catch((validationErrors: ValidationError) => {

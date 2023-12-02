@@ -1,8 +1,19 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { IFormData } from '../../types/interfaces/IFormData';
+
+export interface IData {
+  name: string;
+  age: number;
+  email: string;
+  password: string;
+  confirmPassword: string;
+  gender: 'male' | 'female';
+  accept: string;
+  image: string;
+  country: string;
+}
 
 interface IFormDataState {
-  data: IFormData[];
+  data: IData[];
 }
 
 const initialState: IFormDataState = {
@@ -13,7 +24,7 @@ const formDataSlice = createSlice({
   name: 'formData',
   initialState,
   reducers: {
-    appendData: (state, action: PayloadAction<IFormData>) => {
+    appendData: (state, action: PayloadAction<IData>) => {
       state.data.unshift(action.payload);
     },
   },
