@@ -30,6 +30,7 @@ export function ReactHookForm() {
         <input
           {...register('age')}
           type="number"
+          id="age"
           className="input"
           defaultValue="0"
         />
@@ -37,12 +38,22 @@ export function ReactHookForm() {
       </label>
       <label htmlFor="age" className="label">
         Email:
-        <input {...register('email')} type="text" className="input" />
+        <input
+          {...register('email')}
+          type="text"
+          className="input"
+          id="email"
+        />
         {errors.email && <span className="error">{errors.email.message}</span>}
       </label>
       <label htmlFor="password" className="label">
         Password:
-        <input {...register('password')} type="password" className="input" />
+        <input
+          {...register('password')}
+          type="password"
+          className="input"
+          id="password"
+        />
         {errors.password && (
           <span className="error">{errors.password.message}</span>
         )}
@@ -53,6 +64,7 @@ export function ReactHookForm() {
           {...register('confirmPassword')}
           type="password"
           className="input"
+          id="confirmPassword"
         />
         {errors.confirmPassword && (
           <span className="error">{errors.confirmPassword.message}</span>
@@ -60,21 +72,23 @@ export function ReactHookForm() {
       </label>
       <div className="gender">
         Gender:
-        <label htmlFor="gender" className="label">
+        <label htmlFor="male" className="label">
           <input
             {...register('gender')}
             type="radio"
             value="male"
             className="input"
+            id="male"
           />
           :Male
         </label>
-        <label htmlFor="gender" className="label">
+        <label htmlFor="female" className="label">
           <input
             {...register('gender')}
             type="radio"
             value="female"
             className="input"
+            id="female"
           />
           :Female
         </label>
@@ -84,19 +98,24 @@ export function ReactHookForm() {
       </div>
       <label htmlFor="accept" className="accept">
         Accept T&C:
-        <input {...register('accept')} type="checkbox" className="input" />
+        <input
+          {...register('accept')}
+          type="checkbox"
+          className="input"
+          id="accept"
+        />
         {errors.accept && (
           <span className="error">{errors.accept.message}</span>
         )}
       </label>
       <label htmlFor="image" className="label">
         Image:
-        <input {...register('image')} type="file" />
+        <input {...register('image')} type="file" id="image" />
         {errors.image && <span className="error">{errors.image.message}</span>}
       </label>
       <label htmlFor="image">
         Country:
-        <input {...register('country')} type="text" />
+        <input {...register('country')} type="text" id="country" />
         {errors.country && <p>{errors.country.message}</p>}
       </label>
       <button type="submit">Send</button>

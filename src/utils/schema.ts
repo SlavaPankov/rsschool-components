@@ -1,4 +1,4 @@
-import { mixed, number, object, ObjectSchema, ref, string } from 'yup';
+import { boolean, mixed, number, object, ObjectSchema, ref, string } from 'yup';
 import { IFormData } from '../types/interfaces/IFormData';
 import { EErrorMessages } from '../types/enums/EErrorMessages';
 
@@ -54,16 +54,28 @@ export const schema: ObjectSchema<IFormData> = object({
     .oneOf([ref('password')], EErrorMessages.matchError)
     .required(EErrorMessages.requireConfirmPassword),
   gender: string<'male' | 'female'>().required(EErrorMessages.requireGender),
-  accept: string().required(EErrorMessages.requireAccept),
-  image: mixed((input): input is File => input instanceof File)
+  accept: boolean()
+    .required(EErrorMessages.requireAccept)
+    .oneOf([true], EErrorMessages.requireAccept),
+  image: mixed((input): input is FileList => input instanceof FileList)
     .required(EErrorMessages.requireImage)
-    .test('fileSize', EErrorMessages.invalidSize, (value) => {
-      const file = value as File;
-      return file && file.size <= 1024 * 1024;
+    .test('fileSize', EErrorMessages.invalidSize, (value, ctx) => {
+      const fileList = value as FileList;
+
+      if (!fileList.length) {
+        return ctx.createError({ message: EErrorMessages.requireImage });
+      }
+
+      return fileList && fileList[0].size <= 1024 * 1024;
     })
-    .test('fileType', EErrorMessages.invalidExtension, (value) => {
-      const file = value as File;
-      return file && ['image/jpeg', 'image/png'].includes(file.type);
+    .test('fileType', EErrorMessages.invalidExtension, (value, ctx) => {
+      const fileList = value as FileList;
+
+      if (!fileList.length) {
+        return ctx.createError({ message: EErrorMessages.requireImage });
+      }
+
+      return fileList && ['image/jpeg', 'image/png'].includes(fileList[0].type);
     }),
   country: string().required(EErrorMessages.requiredCountry),
 });

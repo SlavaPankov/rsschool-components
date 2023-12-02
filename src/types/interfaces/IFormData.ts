@@ -5,7 +5,7 @@ export interface IFormData {
   password: string;
   confirmPassword: string;
   gender: 'male' | 'female';
-  accept: string;
-  image: File;
+  accept: boolean;
+  image: FileList;
   country: string;
 }

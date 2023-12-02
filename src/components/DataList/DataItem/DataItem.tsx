@@ -1,8 +1,8 @@
 import styles from './dataItem.module.css';
-import { IFormData } from '../../../types/interfaces/IFormData';
+import { IData } from '../../../store/formData/formData';
 
 interface IDataItemProps {
-  item: IFormData;
+  item: IData;
 }
 export function DataItem({ item }: IDataItemProps) {
   return (
@@ -24,7 +24,8 @@ export function DataItem({ item }: IDataItemProps) {
         <span className={styles.value}>{item.confirmPassword}</span>
       </div>
       <div className={styles.data}>
-        Accept T&C: <span className={styles.value}>{item.accept}</span>
+        Accept T&C:{' '}
+        <span className={styles.value}>{item.accept && 'true'}</span>
       </div>
       <div className={styles.data}>
         Gender: <span className={styles.value}>{item.gender}</span>

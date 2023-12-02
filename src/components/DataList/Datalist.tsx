@@ -1,9 +1,9 @@
-import { IFormData } from '../../types/interfaces/IFormData';
 import styles from './dataList.module.css';
 import { DataItem } from './DataItem';
+import { IData } from '../../store/formData/formData';
 
 interface IDataListProps {
-  list: IFormData[];
+  list: IData[];
 }
 
 export function Datalist({ list }: IDataListProps) {

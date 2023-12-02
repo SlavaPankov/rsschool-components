@@ -7,7 +7,7 @@ export interface IData {
   password: string;
   confirmPassword: string;
   gender: 'male' | 'female';
-  accept: string;
+  accept: boolean;
   image: string;
   country: string;
 }
