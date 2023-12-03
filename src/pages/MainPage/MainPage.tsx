@@ -18,7 +18,9 @@ export function MainPage() {
           <NavLink to="/react-hook-form">React hook form</NavLink>
         </li>
       </ul>
-      <Datalist list={data} />
+      <div className="listWrapper">
+        <Datalist list={data} title="Submitted data" />
+      </div>
     </>
   );
 }

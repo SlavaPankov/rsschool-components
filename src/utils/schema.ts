@@ -38,7 +38,7 @@ export const schema: ObjectSchema<IFormData> = object({
     .required(EErrorMessages.requirePassword)
     .min(8, EErrorMessages.passwordLengthError)
     .matches(
-      /^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*()-_=+{};:,<.>]).{4,}$/,
+      /^(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*()_+{}\\[\]:;<>,.?~-]).{8,}$/,
       { message: EErrorMessages.strengthError }
     )
     .test({

@@ -2,6 +2,7 @@
   padding-top: 30px;
   display: flex;
   gap: 20px;
+  flex-direction: column;
 }
 
 .list {
@@ -9,5 +10,12 @@
   flex-direction: column;
   gap: 20px;
   max-width: 100%;
-  width: 50%;
+}
+
+.item {
+  height: 100%;
+}
+
+.firstItem {
+  background-color: #F6C6CE;
 }
