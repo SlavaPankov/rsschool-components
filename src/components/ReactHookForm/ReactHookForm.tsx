@@ -19,7 +19,6 @@ export function ReactHookForm() {
   const { countries } = useAppSelector((state) => state.countries);
   const [strength, setStrength] = useState(getPasswordStrength(''));
   const {
-    register,
     control,
     handleSubmit,
     formState: { errors },
@@ -35,6 +34,7 @@ export function ReactHookForm() {
       gender: 'male',
       accept: false,
       country: '',
+      image: undefined,
     },
   });
 
@@ -192,11 +192,26 @@ export function ReactHookForm() {
           </label>
         )}
       />
-      <label htmlFor="image" className="label">
-        Image:
-        <input {...register('image')} type="file" id="image" />
-        {errors.image && <span className="error">{errors.image.message}</span>}
-      </label>
+      <Controller
+        name={EFormFieldNames.image}
+        control={control}
+        render={({ field }) => (
+          <label htmlFor={EFormFieldNames.image} className="label">
+            Image:
+            <input
+              {...field}
+              type="file"
+              value={undefined}
+              onChange={(e) => field.onChange(e.target.files)}
+              name={EFormFieldNames.image}
+              id={EFormFieldNames.image}
+            />
+            {errors.image && (
+              <span className="error">{errors.image.message}</span>
+            )}
+          </label>
+        )}
+      />
       <Controller
         name={EFormFieldNames.country}
         control={control}
