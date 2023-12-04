@@ -1,0 +1,21 @@
+.wrapper {
+  padding-top: 30px;
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  max-width: 100%;
+}
+
+.item {
+  height: 100%;
+}
+
+.firstItem {
+  background-color: #f6c6ce;
+}
